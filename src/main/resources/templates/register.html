@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - Smart Home Energy Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .registration-box {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            animation: slideIn 0.5s ease-in-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .registration-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .registration-header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .registration-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .password-strength {
+            margin-top: 8px;
+            font-size: 12px;
+        }
+        
+        .strength-bar {
+            width: 100%;
+            height: 4px;
+            background-color: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .strength-indicator {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-signup {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-signup:active {
+            transform: translateY(0);
+        }
+        
+        .btn-signup:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .login-link p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .login-link a:hover {
+            color: #764ba2;
+        }
+        
+        .error-message {
+            background-color: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+            border-left: 4px solid #c33;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .success-message {
+            background-color: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+            border-left: 4px solid #3c3;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .requirements {
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .requirements ul {
+            list-style: none;
+            margin: 0;
+        }
+        
+        .requirements li {
+            padding: 4px 0;
+        }
+        
+        .requirement-check {
+            display: inline-block;
+            margin-right: 5px;
+            color: #ccc;
+        }
+        
+        .requirement-check.done {
+            color: #3c3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="registration-box">
+            <div class="registration-header">
+                <h1>Create Account</h1>
+                <p>Smart Home Energy Management System</p>
+            </div>
+            
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+            
+            <form id="registrationForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="">-- Select Your Role --</option>
+                        <option value="OWNER">Owner - Full control over the system</option>
+                        <option value="FAMILY_MEMBER">Family Member - Shared access with limited controls</option>
+                        <option value="GUEST">Guest - View-only access</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter a strong password" required oninput="checkPasswordStrength()">
+                    <div class="strength-bar">
+                        <div id="strengthIndicator" class="strength-indicator"></div>
+                    </div>
+                    <div class="requirements">
+                        <ul>
+                            <li><span class="requirement-check" id="length">✓</span> At least 8 characters</li>
+                            <li><span class="requirement-check" id="uppercase">✓</span> At least one uppercase letter</li>
+                            <li><span class="requirement-check" id="lowercase">✓</span> At least one lowercase letter</li>
+                            <li><span class="requirement-check" id="digit">✓</span> At least one digit</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-signup" id="signupBtn">
+                    <span id="btnText">Create Account</span>
+                    <div id="spinner" class="spinner"></div>
+                </button>
+            </form>
+            
+            <div class="login-link">
+                <p>Already have an account? <a href="/login">Login</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:8081/api/auth';
+        
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const indicator = document.getElementById('strengthIndicator');
+            const lengthCheck = document.getElementById('length');
+            const uppercaseCheck = document.getElementById('uppercase');
+            const lowercaseCheck = document.getElementById('lowercase');
+            const digitCheck = document.getElementById('digit');
+            
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) {
+                strength += 25;
+                lengthCheck.classList.add('done');
+            } else {
+                lengthCheck.classList.remove('done');
+            }
+            
+            // Uppercase check
+            if (/[A-Z]/.test(password)) {
+                strength += 25;
+                uppercaseCheck.classList.add('done');
+            } else {
+                uppercaseCheck.classList.remove('done');
+            }
+            
+            // Lowercase check
+            if (/[a-z]/.test(password)) {
+                strength += 25;
+                lowercaseCheck.classList.add('done');
+            } else {
+                lowercaseCheck.classList.remove('done');
+            }
+            
+            // Digit check
+            if (/\d/.test(password)) {
+                strength += 25;
+                digitCheck.classList.add('done');
+            } else {
+                digitCheck.classList.remove('done');
+            }
+            
+            indicator.style.width = strength + '%';
+            
+            if (strength <= 25) {
+                indicator.style.backgroundColor = '#ff4444';
+            } else if (strength <= 50) {
+                indicator.style.backgroundColor = '#ffaa00';
+            } else if (strength <= 75) {
+                indicator.style.backgroundColor = '#88cc00';
+            } else {
+                indicator.style.backgroundColor = '#00aa00';
+            }
+        }
+        
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const role = document.getElementById('role').value.trim();
+            
+            // Validation
+            if (!username || !email || !password || !confirmPassword || !role) {
+                showError('All fields are required');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+            
+            if (username.length < 3) {
+                showError('Username must be at least 3 characters');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showError('Please enter a valid email address');
+                return;
+            }
+            
+            registerUser(username, email, password, role);
+        }
+        
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        async function registerUser(username, email, password, role) {
+            const signupBtn = document.getElementById('signupBtn');
+            const spinner = document.getElementById('spinner');
+            const btnText = document.getElementById('btnText');
+            
+            signupBtn.disabled = true;
+            spinner.style.display = 'block';
+            btnText.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_URL}/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        email: email,
+                        password: password,
+                        role: role
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showSuccess('Account created successfully! Redirecting to login...');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                } else {
+                    showError(data.message || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('An error occurred while connecting to the server. Please check your connection and try again.');
+            } finally {
+                signupBtn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.style.display = 'inline';
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 5000);
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+        }
+    </script>
+</body>
+</html>
