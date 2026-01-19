@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Home Energy Management System</title>
+
+<style>
+:root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --dark: #2c2c2c;
+    --light: #f5f6fa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ================= HEADER ================= */
+header {
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo img {
+    width: 45px;
+}
+
+.logo h2 {
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+select {
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.btn {
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background: var(--primary);
+    color: white;
+}
+
+.btn.signup {
+    background: var(--secondary);
+}
+
+/* ================= HERO ================= */
+.hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    max-width: 700px;
+    margin: auto;
+    font-size: 16px;
+}
+
+/* ================= MODULES ================= */
+.modules {
+    background: var(--light);
+    padding: 50px 20px;
+    flex: 1;
+}
+
+.modules h2 {
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 26px;
+    color: var(--dark);
+}
+
+/* 2 × 3 MATRIX */
+.card-container {
+    max-width: 1000px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+}
+
+.card-content {
+    position: relative;
+    z-index: 1;
+}
+
+.icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #555;
+}
+
+.card:hover h3,
+.card:hover p {
+    color: white;
+}
+
+/* ================= FOOTER ================= */
+footer {
+    background: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">
+        <img src="/images/shems_logo.jpeg" alt="Logo">
+        <h2 id="appTitle">Smart Home Energy Management System</h2>
+    </div>
+
+    <div class="nav-buttons">
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="en">EN</option>
+            <option value="ta">தமிழ்</option>
+            <option value="te">తెలుగు</option>
+            <option value="hi">हिंदी</option>
+        </select>
+        <button class="btn" onclick="location.href='/login'">Login</button>
+        <button class="btn signup" onclick="location.href='/register'">Signup</button>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <h1 id="heroTitle">Smart Home Energy Management</h1>
+    <p id="heroDesc">
+        Monitor, control, and optimize your home energy usage using smart automation.
+    </p>
+</section>
+
+<!-- MODULES -->
+<section class="modules">
+    <h2 id="moduleTitle">Application Modules</h2>
+
+    <div class="card-container">
+        <div class="card"><div class="card-content"><div class="icon">🔐</div><h3 id="m1t"></h3><p id="m1d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">📡</div><h3 id="m2t"></h3><p id="m2d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">⚡</div><h3 id="m3t"></h3><p id="m3d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">⏱️</div><h3 id="m4t"></h3><p id="m4d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">🔔</div><h3 id="m5t"></h3><p id="m5d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">📊</div><h3 id="m6t"></h3><p id="m6d"></p></div></div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    © 2026 Smart Home Energy Management System
+</footer>
+
+<script>
+const data = {
+    en: {
+        hero: "Smart Home Energy Management",
+        desc: "Monitor, control, and optimize your home energy usage using smart automation.",
+        modules: [
+            ["Authentication & Roles","Secure login, signup, and role-based access control."],
+            ["Device Management","Add, remove, and manage smart home devices."],
+            ["Energy Monitoring","Track real-time energy consumption."],
+            ["Automation & Scheduling","Automate devices based on time and conditions."],
+            ["Alerts & Notifications","Receive alerts for abnormal usage."],
+            ["Reports & Analytics","View reports and insights for optimization."]
+        ]
+    },
+    ta: {
+        hero: "ஸ்மார்ட் வீட்டு மின்சக்தி மேலாண்மை",
+        desc: "உங்கள் வீட்டு மின்சார பயன்பாட்டை கண்காணித்து மேம்படுத்துங்கள்.",
+        modules: [
+            ["அங்கீகாரம் & பாத்திரங்கள்","பாதுகாப்பான உள்நுழைவு மற்றும் அணுகல்."],
+            ["சாதன மேலாண்மை","ஸ்மார்ட் சாதனங்களை நிர்வகிக்கவும்."],
+            ["மின்சக்தி கண்காணிப்பு","நேரடி மின்சார பயன்பாடு."],
+            ["தானியக்கம் & அட்டவணை","நேர அடிப்படையிலான கட்டுப்பாடு."],
+            ["எச்சரிக்கைகள்","அசாதாரண பயன்பாட்டுக்கான எச்சரிக்கை."],
+            ["அறிக்கைகள் & பகுப்பாய்வு","மின்சார அறிக்கைகள்."]
+        ]
+    },
+    te: {
+        hero: "స్మార్ట్ హోమ్ ఎనర్జీ మేనేజ్‌మెంట్",
+        desc: "ఇంటిలో విద్యుత్ వినియోగాన్ని నియంత్రించండి.",
+        modules: [
+            ["ప్రామాణీకరణ","లాగిన్ మరియు పాత్ర నియంత్రణ."],
+            ["పరికరాల నిర్వహణ","స్మార్ట్ పరికరాల నియంత్రణ."],
+            ["విద్యుత్ మానిటరింగ్","వినియోగాన్ని ట్రాక్ చేయండి."],
+            ["ఆటోమేషన్","స్వయంచాలక నియంత్రణ."],
+            ["అలర్ట్స్","నోటిఫికేషన్లు."],
+            ["రిపోర్ట్స్","విశ్లేషణ."]
+        ]
+    },
+    hi: {
+        hero: "स्मार्ट होम एनर्जी मैनेजमेंट",
+        desc: "घर की बिजली खपत को स्मार्ट तरीके से नियंत्रित करें।",
+        modules: [
+            ["प्रमाणीकरण","लॉगिन और भूमिका प्रबंधन।"],
+            ["डिवाइस प्रबंधन","स्मार्ट डिवाइस नियंत्रण।"],
+            ["ऊर्जा निगरानी","रीयल टाइम उपयोग।"],
+            ["स्वचालन","समय आधारित नियंत्रण।"],
+            ["अलर्ट","सूचनाएं।"],
+            ["रिपोर्ट्स","ऊर्जा विश्लेषण।"]
+        ]
+    }
+};
+
+function changeLanguage() {
+    const lang = document.getElementById("languageSelect").value;
+    document.getElementById("heroTitle").innerText = data[lang].hero;
+    document.getElementById("heroDesc").innerText = data[lang].desc;
+
+    data[lang].modules.forEach((m, i) => {
+        document.getElementById(`m${i+1}t`).innerText = m[0];
+        document.getElementById(`m${i+1}d`).innerText = m[1];
+    });
+}
+
+changeLanguage();
+</script>
+
+</body>
+</html>

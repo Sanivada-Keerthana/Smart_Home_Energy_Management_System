@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title th:text="${pageTitle} ?: 'Dashboard'">Dashboard</title>
+
+<style>
+:root{
+  --primary:#667eea;
+  --secondary:#764ba2;
+  --bg:#f5f6fa;
+  --card:#ffffff;
+  --text:#2c2c2c;
+  --border:#e5e7eb;
+  --shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:var(--bg);color:var(--text);}
+
+.app{display:flex;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{
+  width:260px;
+  background:#fff;
+  padding:20px;
+  border-right:1px solid var(--border);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--border);
+}
+
+.brand img{width:48px;}
+.brand h3{color:var(--primary);}
+
+.menu{
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.menu a{
+  padding:12px;
+  border-radius:10px;
+  text-decoration:none;
+  color:#333;
+  font-weight:600;
+  transition:.3s;
+}
+
+.menu a:hover,
+.menu a.active{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;}
+
+/* Topbar */
+.topbar{
+  height:70px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 25px;
+  color:#fff;
+}
+
+.topbar h2{font-size:20px;font-weight:700;}
+
+/* Profile */
+.profile-area{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  position:relative;
+  cursor:pointer;
+}
+
+/* Role badge image */
+.role-badge{
+  height:34px;
+  border-radius:8px;
+  background:#fff;
+  padding:3px;
+  box-shadow:var(--shadow);
+}
+
+/* Avatar + username */
+.user-box{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#fff;
+  color:#333;
+  padding:6px 12px;
+  border-radius:25px;
+  font-weight:600;
+}
+
+.avatar{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-weight:700;
+}
+
+/* Dropdown */
+.dropdown{
+  position:absolute;
+  top:55px;
+  right:0;
+  width:190px;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  display:none;
+  overflow:hidden;
+}
+
+.dropdown a{
+  display:block;
+  padding:12px;
+  text-decoration:none;
+  color:#333;
+  font-weight:600;
+}
+
+.dropdown a:hover{background:#f5f6fa;}
+
+.profile-area.open .dropdown{display:block;}
+
+/* Content */
+.content{padding:30px;}
+.card{
+  background:#fff;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:var(--shadow);
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img th:src="@{/images/shems_logo.jpeg}">
+      <h3>SHEMS</h3>
+    </div>
+
+    <nav class="menu">
+      <a th:href="@{/dashboard}" th:classappend="${activePage=='home'}?'active'">Home</a>
+      <a th:href="@{/device}" th:classappend="${activePage=='device'}?'active'">Devices</a>
+      <a th:href="@{/tracking}" th:classappend="${activePage=='tracking'}?'active'">Energy</a>
+      <a th:href="@{/analytics}" th:classappend="${activePage=='analytics'}?'active'">Analytics</a>
+      <a th:href="@{/scheduling}" th:classappend="${activePage=='scheduling'}?'active'">Scheduling</a>
+      <a th:href="@{/recommendations}" th:classappend="${activePage=='recommendations'}?'active'">Tips</a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <h2 th:text="${headerTitle}">Dashboard</h2>
+
+      <div class="profile-area" id="profileBox">
+
+        <!-- Role badge -->
+        <img class="role-badge"
+             th:src="${role=='OWNER'} ? @{/images/owner.png} :
+                     (${role=='FAMILY_MEMBER'} ? @{/images/family_member.png} :
+                     @{/images/guest.png})"/>
+
+        <!-- Avatar + username -->
+        <div class="user-box">
+          <div class="avatar">👤</div>
+          <span th:text="${username}">User</span>
+        </div>
+
+        <!-- Dropdown -->
+        <div class="dropdown" id="profileDropdown">
+          <a th:href="@{/profile}">Profile</a>
+          <a th:href="@{/logout}" class="danger">Logout</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content">
+      <div th:replace="~{${activePage} :: content}"></div>
+    </main>
+
+  </div>
+</div>
+
+<script>
+  const profileBox = document.getElementById("profileBox");
+
+  profileBox.addEventListener("click", (e) => {
+    e.stopPropagation();
+    profileBox.classList.toggle("open");
+  });
+
+  document.addEventListener("click", () => {
+    profileBox.classList.remove("open");
+  });
+</script>
+
+</body>
+</html>

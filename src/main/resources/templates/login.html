@@ -1,358 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Smart Home Energy Management System</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-        }
-        
-        .login-box {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            animation: slideIn 0.5s ease-in-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .login-header h1 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        .login-header p {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-        
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="email"]:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 10px;
-        }
-        
-        .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-login:active {
-            transform: translateY(0);
-        }
-        
-        .forgot-password {
-            text-align: center;
-            margin-top: 15px;
-        }
-        
-        .forgot-password a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-        
-        .forgot-password a:hover {
-            color: #764ba2;
-        }
-        
-        .password-options {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .password-options a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            transition: color 0.3s;
-            padding: 5px 10px;
-            border-radius: 3px;
-        }
-        
-        .password-options a:hover {
-            color: #764ba2;
-            background-color: rgba(102, 126, 234, 0.1);
-        }
-        
-        .signup-link {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        .signup-link p {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .signup-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-        
-        .signup-link a:hover {
-            color: #764ba2;
-        }
-        
-        .error-message {
-            background-color: #fee;
-            color: #c33;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            font-size: 14px;
-            border-left: 4px solid #c33;
-        }
-        
-        .error-message.show {
-            display: block;
-        }
-        
-        .success-message {
-            background-color: #efe;
-            color: #3c3;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            font-size: 14px;
-            border-left: 4px solid #3c3;
-        }
-        
-        .success-message.show {
-            display: block;
-        }
-        
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .btn-login:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Smart Home Energy Management System</title>
+
+<style>
+:root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --dark: #2c2c2c;
+    --light: #f9f9f9;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    background: rgba(255,255,255,0.95);
+    padding: 12px 0;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+header img {
+    width: 85px;
+    margin-bottom: 5px;
+}
+
+header h1 {
+    font-size: 22px;
+    color: var(--dark);
+}
+
+/* Center container */
+.container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Glass card */
+.login-card {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 35px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    animation: fadeSlide 0.6s ease;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-title h2 {
+    font-size: 28px;
+    color: var(--dark);
+}
+
+.login-title p {
+    font-size: 14px;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* Messages */
+.message {
+    display: none;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.error {
+    background: #ffeaea;
+    color: #c62828;
+    border-left: 4px solid #c62828;
+}
+
+.success {
+    background: #eaffea;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+}
+
+.message.show {
+    display: block;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 6px;
+    display: block;
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Links */
+.links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.links a {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    margin: 0 6px;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.signup {
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+    font-size: 14px;
+}
+
+.signup a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Footer */
+footer {
+    background: rgba(255,255,255,0.9);
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="login-box">
-            <div class="login-header">
-                <h1>Welcome Back</h1>
-                <p>Smart Home Energy Management System</p>
-            </div>
-            
-            <div id="errorMessage" class="error-message"></div>
-            <div id="successMessage" class="success-message"></div>
-            
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-                
-                <button type="submit" class="btn btn-login" id="loginBtn">
-                    <span id="btnText">Login</span>
-                    <div id="spinner" class="spinner"></div>
-                </button>
-            </form>
-            
-            <div class="forgot-password">
-                <div class="password-options">
-                    <a href="#" onclick="showForgotPassword(event)">Forgot Password?</a>
-                    <span style="color: #ccc;">|</span>
-                    <a href="/reset-password">Reset Password</a>
-                </div>
-            </div>
-            
-            <div class="signup-link">
-                <p>Don't have an account? <a href="/register">Sign Up</a></p>
-            </div>
+
+<header>
+    <img src="/images/shems_logo.jpeg" alt="Logo">
+    <h1>Smart Home Energy Management System</h1>
+</header>
+
+<div class="container">
+    <div class="login-card">
+
+        <div class="login-title">
+            <h2>Welcome Back</h2>
+            <p>Login to manage your smart home energy</p>
         </div>
+
+        <div id="errorMessage" class="message error"></div>
+        <div id="successMessage" class="message success"></div>
+
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
+
+            <button id="loginBtn">Login</button>
+        </form>
+
+        <div class="links">
+            <a href="/forgot-password">Forgot Password?</a> |
+            <a href="/reset-password">Reset Password</a>
+        </div>
+
+        <div class="signup">
+            Don’t have an account? <a href="/register">Sign Up</a>
+        </div>
+
     </div>
-    
-    <script>
-        const API_URL = 'http://localhost:8081/api/auth';
-        
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                showError('Username and password are required');
-                return;
-            }
-            
-            loginUser(username, password);
+</div>
+
+<footer>
+    &copy; 2026 Smart Home Energy Management System
+</footer>
+
+<script>
+const API_URL = 'http://localhost:8081/api/auth';
+
+async function handleLogin(event) {
+    event.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+        showError("Username and password are required");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            showSuccess("Login successful! Redirecting...");
+            setTimeout(() => window.location.href = '/dashboard', 1500);
+        } else {
+            showError(data.message || "Login failed");
         }
-        
-        async function loginUser(username, password) {
-            const loginBtn = document.getElementById('loginBtn');
-            const spinner = document.getElementById('spinner');
-            const btnText = document.getElementById('btnText');
-            
-            loginBtn.disabled = true;
-            spinner.style.display = 'block';
-            btnText.style.display = 'none';
-            
-            try {
-                const response = await fetch(`${API_URL}/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok && data.success) {
-                    showSuccess('Login successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = '/dashboard';
-                    }, 2000);
-                } else {
-                    showError(data.message || 'Login failed');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showError('An error occurred. Please try again.');
-            } finally {
-                loginBtn.disabled = false;
-                spinner.style.display = 'none';
-                btnText.style.display = 'inline';
-            }
-        }
-        
-        function showForgotPassword(event) {
-            event.preventDefault();
-            window.location.href = '/forgot-password';
-        }
-        
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.classList.add('show');
-            
-            setTimeout(() => {
-                errorDiv.classList.remove('show');
-            }, 5000);
-        }
-        
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.classList.add('show');
-        }
-    </script>
+    } catch {
+        showError("Server error. Please try again.");
+    }
+}
+
+function showError(msg) {
+    const e = document.getElementById("errorMessage");
+    e.textContent = msg;
+    e.classList.add("show");
+}
+
+function showSuccess(msg) {
+    const s = document.getElementById("successMessage");
+    s.textContent = msg;
+    s.classList.add("show");
+}
+</script>
+
 </body>
 </html>

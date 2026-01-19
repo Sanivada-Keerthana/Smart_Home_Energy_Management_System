@@ -186,6 +186,16 @@ public class AuthService {
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
     }
+
+    /**
+     * Get user by ID
+     * @param userId the user id
+     * @return the user or null
+    */
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+}
+
     
     /**
      * Update user profile
@@ -205,5 +215,79 @@ public class AuthService {
         }
         
         return false;
+    }
+
+    /**
+     * Update user profile with validation
+     * @param userId the user id
+     * @param email the new email
+     * @param username the new username
+     * @return true if update successful
+    */
+    public boolean updateUserProfileWithValidation(Long userId, String email, String username) {
+
+        if (!isValidEmail(email)) {
+            return false;
+        }
+
+        Optional<User> userOpt = userRepository.findById(userId);
+
+        if (userOpt.isEmpty()) {
+            return false;
+        }
+
+        User user = userOpt.get();
+
+        // Prevent duplicate email
+        Optional<User> existingEmailUser = userRepository.findByEmail(email);
+        if (existingEmailUser.isPresent()
+                && !existingEmailUser.get().getUserId().equals(userId)) {
+            return false;
+        }
+
+        user.setEmail(email);
+        user.setUsername(username);
+        user.setUpdatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean updateUserProfileWithPassword(
+        Long userId,
+        String email,
+        String username,
+        String password) {
+
+        if (!isValidEmail(email)) {
+            return false;
+        }
+
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return false;
+        }
+
+        User user = userOpt.get();
+
+        // Prevent duplicate email
+        Optional<User> existingEmailUser = userRepository.findByEmail(email);
+        if (existingEmailUser.isPresent()
+                && !existingEmailUser.get().getUserId().equals(userId)) {
+            return false;
+        }
+
+        user.setEmail(email);
+        user.setUsername(username);
+
+        // Update password only if provided
+        if (password != null && !password.isBlank()) {
+            user.setPassword(encodePassword(password));
+        }
+
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        return true;
     }
 }

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="content"
+     class="bg-slate-50 text-slate-900 p-6 md:p-10"
+     th:data-role="${role}">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .glow-active { box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4); }
+        .card-transition { transition: all 0.3s ease-in-out; }
+    </style>
+
+    <h1 class="text-4xl font-extrabold mb-12 text-zinc-800 text-center uppercase tracking-widest">
+        Device Management
+    </h1>
+
+    <!-- STATS -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <p class="text-[10px] uppercase font-bold text-slate-500">Total Devices</p>
+            <h3 id="totalCount" class="text-3xl font-bold text-violet-600">0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <p class="text-[10px] uppercase font-bold text-slate-500">Active</p>
+            <h3 id="activeCount" class="text-3xl font-bold text-green-600">0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <p class="text-[10px] uppercase font-bold text-slate-500">Inactive</p>
+            <h3 id="inactiveCount" class="text-3xl font-bold text-slate-400">0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <p class="text-[10px] uppercase font-bold text-slate-500">Energy (kWh)</p>
+            <h3 id="totalUsage" class="text-3xl font-bold text-blue-600">0.00</h3>
+        </div>
+    </div>
+
+    <!-- ADD DEVICE (OWNER ONLY) -->
+    <div th:if="${role == 'OWNER'}"
+         class="mb-12 bg-white p-8 rounded-3xl border shadow-sm">
+
+        <h2 class="text-xl font-semibold mb-6">Add New Device</h2>
+
+        <form id="deviceForm" class="flex flex-wrap gap-4">
+            <input id="deviceName" placeholder="Device Name" required
+                   class="p-3 border rounded-xl w-64"/>
+
+            <input id="deviceType" placeholder="Device Type (Light / AC / Fan)"
+                   class="p-3 border rounded-xl w-64"/>
+
+            <select id="initialStatus" class="p-3 border rounded-xl">
+                <option value="OFF">OFF</option>
+                <option value="ON">ON</option>
+            </select>
+
+            <button class="bg-violet-600 text-white px-6 py-3 rounded-xl">
+                Connect Device
+            </button>
+        </form>
+    </div>
+
+    <!-- DEVICES -->
+    <div id="dashboard"
+         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+    <script>
+        const role = document.querySelector('[data-role]').dataset.role;
+
+        function getIcon(type){
+            type = type.toLowerCase();
+            if(type.includes('ac')) return '❄️';
+            if(type.includes('light')) return '💡';
+            if(type.includes('fan')) return '🌀';
+            return '🔌';
+        }
+
+        function getPower(type){
+            type = type.toLowerCase();
+            if(type.includes('ac')) return 1500;
+            if(type.includes('fan')) return 150;
+            if(type.includes('light')) return 50;
+            return 100;
+        }
+
+        async function loadDashboard() {
+            const res = await fetch('/devices');
+            const devices = await res.json();
+
+            document.getElementById('totalCount').innerText = devices.length;
+            const active = devices.filter(d => d.status === 'ON').length;
+            document.getElementById('activeCount').innerText = active;
+            document.getElementById('inactiveCount').innerText = devices.length - active;
+
+            let usage = 0;
+            devices.forEach(d => usage += d.consumption || 0);
+            document.getElementById('totalUsage').innerText = usage.toFixed(2);
+
+            dashboard.innerHTML = devices.map(d => `
+                <div class="bg-white p-6 rounded-3xl border card-transition
+                    ${d.status === 'ON' ? 'border-violet-500 glow-active' : ''}">
+
+                    <div class="text-4xl mb-3">${getIcon(d.deviceType)}</div>
+
+                    <!-- VIEW MODE -->
+                    <div id="view-${d.id}">
+                        <h2 class="text-2xl font-bold">${d.deviceName}</h2>
+                        <p class="text-xs text-slate-400">${d.deviceType}</p>
+
+                        <p class="text-xs text-slate-400">
+                            Power: ${getPower(d.deviceType)} W
+                        </p>
+
+                        <p class="text-xs text-slate-400 mb-2">
+                            Consumption: ${d.consumption.toFixed(2)} kWh
+                        </p>
+
+                        ${d.status === 'ON'
+                            ? `<p class="text-xs text-green-600 font-semibold">Running…</p>`
+                            : `<p class="text-xs text-slate-400">Stopped</p>`}
+                    </div>
+
+                    <!-- EDIT MODE (OWNER) -->
+                    <div id="edit-${d.id}" class="hidden">
+                        <input id="name-${d.id}" value="${d.deviceName}"
+                               class="border p-2 w-full rounded mb-2"/>
+                        <input id="type-${d.id}" value="${d.deviceType}"
+                               class="border p-2 w-full rounded"/>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-4">
+                        <span class="${d.status === 'ON' ? 'text-green-600' : 'text-slate-400'}">
+                            ${d.status}
+                        </span>
+
+                        ${(role === 'OWNER' || role === 'FAMILY_MEMBER') ? `
+                            <button onclick="toggleDevice(${d.id}, '${d.status}')"
+                                    class="px-5 py-2 rounded-xl
+                                    ${d.status === 'ON'
+                                        ? 'bg-slate-200'
+                                        : 'bg-violet-600 text-white'}">
+                                TURN ${d.status === 'ON' ? 'OFF' : 'ON'}
+                            </button>
+                        ` : ``}
+                    </div>
+
+                    ${role === 'OWNER' ? `
+                    <div class="flex gap-4 mt-4">
+                        <button onclick="enableEdit(${d.id})"
+                                class="text-blue-600 font-semibold">
+                            Update
+                        </button>
+                        <button onclick="deleteDevice(${d.id})"
+                                class="text-red-600 font-semibold">
+                            Remove
+                        </button>
+                        <button onclick="saveDevice(${d.id})"
+                                id="save-${d.id}"
+                                class="hidden text-green-600 font-semibold">
+                            Save
+                        </button>
+                    </div>
+                    ` : ``}
+                </div>
+            `).join('');
+        }
+
+        function enableEdit(id){
+            document.getElementById(`view-${id}`).classList.add('hidden');
+            document.getElementById(`edit-${id}`).classList.remove('hidden');
+            document.getElementById(`save-${id}`).classList.remove('hidden');
+        }
+
+        async function saveDevice(id){
+            await fetch(`/devices/${id}`, {
+                method:'PUT',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({
+                    deviceName: document.getElementById(`name-${id}`).value,
+                    deviceType: document.getElementById(`type-${id}`).value
+                })
+            });
+            loadDashboard();
+        }
+
+        async function toggleDevice(id, status) {
+            await fetch(`/devices/${id}/toggle?status=${status === 'ON' ? 'OFF' : 'ON'}`, {method:'PUT'});
+            loadDashboard();
+        }
+
+        async function deleteDevice(id) {
+            if(confirm('Remove this device?')) {
+                await fetch(`/devices/${id}`, {method:'DELETE'});
+                loadDashboard();
+            }
+        }
+
+        document.getElementById('deviceForm')?.addEventListener('submit', async e => {
+            e.preventDefault();
+            await fetch('/devices', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({
+                    deviceName: deviceName.value,
+                    deviceType: deviceType.value,
+                    status: initialStatus.value
+                })
+            });
+            e.target.reset();
+            loadDashboard();
+        });
+
+        loadDashboard();
+    </script>
+
+</div>
+
+</body>
+</html>
