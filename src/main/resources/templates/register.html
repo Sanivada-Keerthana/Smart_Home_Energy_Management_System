@@ -165,21 +165,62 @@ footer {
                 <input type="email" id="email" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="position: relative;">
                 <label>New Password</label>
-                <input type="password" id="newPassword" oninput="checkStrength()" required>
+
+                <input type="password"
+                    id="newPassword"
+                    oninput="checkStrength()"
+                    required
+                    style="padding-right: 40px; position: relative; z-index: 1;">
+
+                <!-- Eye toggle -->
+                <img id="toggleNewPassword"
+                    src="/images/open_eye.png"
+                    alt="Toggle password visibility"
+                    style="
+                        position:absolute;
+                        right:12px;
+                        top:40px;
+                        width:20px;
+                        height:20px;
+                        cursor:pointer;
+                        z-index: 10;
+                    ">
+
                 <div class="strength-bar">
                     <div id="strengthIndicator" class="strength-indicator"></div>
                 </div>
+
                 <div class="requirements">
                     Min 8 chars, uppercase, lowercase & digit
                 </div>
             </div>
 
-            <div class="form-group">
+
+            <div class="form-group" style="position: relative;">
                 <label>Confirm Password</label>
-                <input type="password" id="confirmPassword" required>
-            </div>
+
+                <input type="password"
+                id="confirmPassword"
+                required
+                style="padding-right: 40px;">
+
+            <!-- Eye toggle -->
+            <img id="toggleConfirmPassword"
+                src="/images/open_eye.png"
+                alt="Toggle password visibility"
+                style="
+                    position:absolute;
+                    right:12px;
+                    top:37px;
+                    width:20px;
+                    height:20px;
+                    cursor:pointer;
+                    z-index: 10;
+                ">
+        </div>
+
 
             <button type="submit">Create Account</button>
         </form>
@@ -258,6 +299,44 @@ function showSuccess(msg) {
     successMessage.classList.add("show");
     errorMessage.classList.remove("show");
 }
+
+/* ===== Toggle New Password Visibility ===== */
+document.addEventListener("DOMContentLoaded", function () {
+
+    const pwd = document.getElementById("newPassword");
+    const eye = document.getElementById("toggleNewPassword");
+
+    if (!pwd || !eye) return;
+
+    eye.addEventListener("click", function () {
+        if (pwd.type === "password") {
+            pwd.type = "text";
+            eye.src = "/images/closed_eye.png";
+        } else {
+            pwd.type = "password";
+            eye.src = "/images/open_eye.png";
+        }
+    });
+
+
+    const confirmPwd = document.getElementById("confirmPassword");
+    const confirmEye = document.getElementById("toggleConfirmPassword");
+
+    if (confirmPwd && confirmEye) {
+        confirmEye.addEventListener("click", function () {
+            if (confirmPwd.type === "password") {
+                confirmPwd.type = "text";
+                confirmEye.src = "/images/closed_eye.png";
+            } else {
+                confirmPwd.type = "password";
+                confirmEye.src = "/images/open_eye.png";
+            }
+        });
+    }
+
+
+});
+
 </script>
 
 </body>

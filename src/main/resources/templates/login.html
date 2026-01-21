@@ -231,17 +231,33 @@ footer {
                 <input type="text" id="username" placeholder="Enter username" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="position: relative;">
                 <label>Password</label>
-                <input type="password" id="password" placeholder="Enter password" required>
-            </div>
+
+            <input type="password" id="password"
+                placeholder="Enter password" required>
+
+            <img id="toggleEye"
+                src="/images/open_eye.png"
+                onclick="togglePassword()"
+                alt="Toggle password visibility"
+                style="
+                    position:absolute;
+                    right:14px;
+                    top:38px;
+                    width:20px;
+                    height:20px;
+                    cursor:pointer;
+                ">
+        </div>
+
 
             <button id="loginBtn">Login</button>
         </form>
 
         <div class="links">
-            <a href="/forgot-password">Forgot Password?</a> |
-            <a href="/reset-password">Reset Password</a>
+            <a href="/forgot-password">Forgot Password?</a> 
+            <!-- <a href="/reset-password">Reset Password</a> -->
         </div>
 
         <div class="signup">
@@ -301,6 +317,21 @@ function showSuccess(msg) {
     s.textContent = msg;
     s.classList.add("show");
 }
+
+function togglePassword() {
+    const pwd = document.getElementById("password");
+    const eye = document.getElementById("toggleEye");
+
+    if (pwd.type === "password") {
+        pwd.type = "text";
+        eye.src = "/images/closed_eye.png";
+    } else {
+        pwd.type = "password";
+        eye.src = "/images/open_eye.png";
+    }
+}
+
+
 </script>
 
 </body>

@@ -4,6 +4,7 @@ import com.shems.shems.model.User;
 import com.shems.shems.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.mail.SimpleMailMessage;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -14,6 +15,10 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private org.springframework.mail.javamail.JavaMailSender mailSender;
+
 
     // Email validation pattern
     private static final String EMAIL_PATTERN = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
@@ -133,16 +138,45 @@ public class AuthService {
      * @return true if user exists, false otherwise
      */
     public boolean forgetPassword(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        
-        if (user.isPresent()) {
-            // In production, generate a reset token and send email
-            // For now, just verify the email exists
-            return true;
-        }
-        
-        return false;
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) return false;
+
+        User user = userOpt.get();
+
+        String token = java.util.UUID.randomUUID().toString();
+
+        user.setResetToken(token);
+        user.setTokenExpiry(LocalDateTime.now().plusMinutes(15));
+        userRepository.save(user);
+
+        sendResetEmail(user.getEmail(), token);
+        return true;
     }
+
+
+    
+    private void sendResetEmail(String email, String token) {
+
+        String resetLink =
+            "http://localhost:8081/reset-password?token=" + token;
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Reset Your Password - SHEMS");
+        message.setText(
+            "Hello,\n\n" +
+            "You requested to reset your password.\n\n" +
+            "Click the link below to reset your password:\n" +
+            resetLink + "\n\n" +
+            "This link will expire in 15 minutes.\n\n" +
+            "If you did not request this, please ignore this email.\n\n" +
+            "Regards,\nSHEMS Team"
+        );
+
+        mailSender.send(message);
+    }
+
+
     
     /**
      * Reset user password
@@ -150,24 +184,25 @@ public class AuthService {
      * @param newPassword the new password
      * @return true if password reset successful
      */
-    public boolean resetPassword(String email, String newPassword) {
-        // Validate new password
-        if (!isValidPassword(newPassword)) {
+    public boolean resetPasswordWithToken(String token, String newPassword) {
+        Optional<User> userOpt = userRepository.findByResetToken(token);
+        if (userOpt.isEmpty()) return false;
+
+        User user = userOpt.get();
+
+        if (user.getTokenExpiry().isBefore(LocalDateTime.now())) {
             return false;
         }
-        
-        Optional<User> user = userRepository.findByEmail(email);
-        
-        if (user.isPresent()) {
-            User foundUser = user.get();
-            foundUser.setPassword(encodePassword(newPassword));
-            foundUser.setUpdatedAt(LocalDateTime.now());
-            userRepository.save(foundUser);
-            return true;
-        }
-        
-        return false;
+
+        user.setPassword(encodePassword(newPassword));
+        user.setResetToken(null);
+        user.setTokenExpiry(null);
+        user.setUpdatedAt(LocalDateTime.now());
+
+        userRepository.save(user);
+        return true;
     }
+
     
     /**
      * Get user by username

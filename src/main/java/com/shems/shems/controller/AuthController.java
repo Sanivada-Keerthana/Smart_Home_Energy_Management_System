@@ -146,41 +146,35 @@ public class AuthController {
      * POST /api/auth/reset-password
      */
     @PostMapping("/reset-password")
-    public ResponseEntity<AuthResponse> resetPassword(@RequestBody PasswordResetRequest resetRequest) {
-        try {
-            if (resetRequest.getEmail() == null || resetRequest.getEmail().isEmpty() ||
-                resetRequest.getNewPassword() == null || resetRequest.getNewPassword().isEmpty() ||
-                resetRequest.getConfirmPassword() == null || resetRequest.getConfirmPassword().isEmpty()) {
-                return ResponseEntity.badRequest()
-                    .body(new AuthResponse(false, "All fields are required"));
-            }
-            
-            // Check if passwords match
-            if (!resetRequest.getNewPassword().equals(resetRequest.getConfirmPassword())) {
-                return ResponseEntity.badRequest()
-                    .body(new AuthResponse(false, "Passwords do not match"));
-            }
-            
-            // Validate password strength
-            if (!authService.isValidPassword(resetRequest.getNewPassword())) {
-                return ResponseEntity.badRequest()
-                    .body(new AuthResponse(false, "Password must be at least 8 characters with uppercase, lowercase, and digit"));
-            }
-            
-            if (authService.resetPassword(resetRequest.getEmail(), resetRequest.getNewPassword())) {
-                return ResponseEntity.ok()
-                    .body(new AuthResponse(true, "Password reset successful"));
-            } else {
-                return ResponseEntity.badRequest()
-                    .body(new AuthResponse(false, "Failed to reset password"));
-            }
-        } catch (Exception e) {
-            System.err.println("Reset password error: " + e.getMessage());
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new AuthResponse(false, "Database connection error. Please check if MySQL is running on localhost:3306"));
+    public ResponseEntity<AuthResponse> resetPassword(
+            @RequestBody PasswordResetRequest resetRequest) {
+
+        if (!resetRequest.getNewPassword()
+                .equals(resetRequest.getConfirmPassword())) {
+            return ResponseEntity.badRequest()
+                .body(new AuthResponse(false, "Passwords do not match"));
         }
+
+        if (!authService.isValidPassword(resetRequest.getNewPassword())) {
+            return ResponseEntity.badRequest()
+                .body(new AuthResponse(false,
+                    "Password must be at least 8 characters with uppercase, lowercase & digit"));
+        }
+
+        boolean success = authService.resetPasswordWithToken(
+                resetRequest.getToken(),
+                resetRequest.getNewPassword()
+        );
+
+        if (!success) {
+            return ResponseEntity.badRequest()
+                .body(new AuthResponse(false, "Invalid or expired reset link"));
+        }
+
+        return ResponseEntity.ok(
+            new AuthResponse(true, "Password reset successful"));
     }
+
     
     /**
      * Logout endpoint

@@ -31,6 +31,13 @@ public class User {
     
     @Column
     private LocalDateTime updatedAt;
+
+    @Column
+    private String resetToken;
+
+    @Column
+    private LocalDateTime tokenExpiry;
+
     
     // Constructors
     public User() {
@@ -109,6 +116,23 @@ public class User {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getTokenExpiry() {
+        return tokenExpiry;
+    }
+
+    public void setTokenExpiry(LocalDateTime tokenExpiry) {
+        this.tokenExpiry = tokenExpiry;
+    }
+
     
     // Custom Methods
     public void updateProfile(String email, String username) {
