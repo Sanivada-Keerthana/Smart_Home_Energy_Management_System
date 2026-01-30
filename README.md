@@ -1,85 +1,163 @@
-🏠 Smart Home Energy Management System (SHEMS)
+# Smart Residential Energy Management System (SREMS) 🏠 
 
-📌 Project Overview
+A **Java Spring Boot–based backend system** designed to manage energy usage, user access, and smart devices in a residential environment.
+SREMS focuses on **secure authentication**, **role-based access**, and **controlled device operations**, forming a strong foundation for future energy optimization and automation.
 
-The Smart Home Energy Management System (SHEMS) is a Java-based backend application built using Spring Boot.
-The project focuses on secure user authentication and role-based smart device management as the foundation of an intelligent smart home system.
+---
 
-Currently, two core modules have been implemented and pushed to GitHub using separate branches for clear development tracking.
+## Project Overview
 
+The **Smart Residential Energy Management System (SREMS)** enables residents and administrators to:
 
-🧩 Implemented Modules
+* Securely access the system using role-based authentication
+* Manage smart electrical devices within a residence
+* Control who can view or operate devices
+* Establish a scalable backend for energy monitoring and automation
 
-🔐 Module 1: Authentication & User Access
+This project is structured in **incremental modules**, where each module builds upon the previous one.
 
-This module provides secure access control to the system using role-based authentication.
+---
 
-Features:
+## 🔐 Module 1 — Authentication & Access Control
 
-* User registration and login
-* Role-based access control (Owner, Family Member, Guest)
-* Secure session handling
-* Prevention of unauthorized access
+**Branch:** `module1_authentication`
 
-📌 Branch: `module1_authentication`
-This branch contains only Module 1 implementation with authentication and authorization logic.
+This module handles secure user access and authorization.
 
-⚡ Module 2: Smart Device Management
+### Features
 
-This module manages smart home devices and enforces permissions based on user roles.
+✔ User registration and login
+✔ Secure authentication using Spring Security
+✔ Role-based access control
 
-Features:
+### User Roles
 
-* Device registration
-* Device ON/OFF control
-* Device status monitoring
-* Role-based permissions:
-  * Owner: Add, Update, Remove, Toggle devices
-  * Family Member: View and Toggle devices
-  * Guest: View devices only
-* Backend validation for all device actions
+* **Resident (Owner)**
+* **Family Member**
+* **Guest**
 
-📌 Branch: `module2_devicemanagement`
-This branch contains Module 1 + Module 2, including updated backend logic and dashboard integration.
+✔ Session management
+✔ Protection against unauthorized access
 
+---
 
-🏗 Architecture
+## ⚡ Module 2 — Smart Device Management
 
-The project follows a layered architecture:
+**Branch:** `module2_devicemanagement`
 
-* Controller Layer
-* Service Layer
-* Repository Layer
-* Model / Entity Layer
+Extends Module 1 by introducing smart device control within a residential setup.
 
-This ensures clean separation of concerns and scalability.
+### Features
 
+✔ Register and manage residential electrical devices
+✔ Turn devices ON / OFF
+✔ View device status in real time
+✔ Backend-enforced role permissions
 
-🛠 Technology Stack
+### Role-Based Device Permissions
 
-* Java
-* Spring Boot
-* Spring MVC
-* Spring Data JPA (Hibernate)
-* MySQL
-* Thymeleaf
-* Git & GitHub
+| Role             | View Devices | Control Devices | Add / Remove Devices |
+| ---------------- | ------------ | --------------- | -------------------- |
+| Resident (Owner) | ✅            | ✅               | ✅                    |
+| Family Member    | ✅            | ✅               | ❌                    |
+| Guest            | ✅            | ❌               | ❌                    |
 
+✔ Centralized validation of all device operations
 
-🗂 Branch Structure
+---
 
+## 🧱 System Architecture
+
+SREMS follows a **layered backend architecture**:
+
+* **Controller Layer** – Handles REST/HTTP requests
+* **Service Layer** – Business logic & validations
+* **Repository Layer** – Database interaction
+* **Entity/Model Layer** – Core domain objects
+
+This structure improves **maintainability**, **scalability**, and **security**.
+
+---
+
+## 🛠 Technology Stack
+
+| Category        | Technology      |
+| --------------- | --------------- |
+| Language        | Java            |
+| Framework       | Spring Boot     |
+| Security        | Spring Security |
+| MVC             | Spring MVC      |
+| ORM             | Hibernate / JPA |
+| Database        | MySQL           |
+| Template Engine | Thymeleaf       |
+| Build Tool      | Maven           |
+| Version Control | Git & GitHub    |
+
+---
+
+## 🌿 Branch Structure
+
+```
 main
 ├── module1_authentication
-│   └── Authentication & Role Management
-│
+│   └── User authentication & role management
 └── module2_devicemanagement
-    └── Authentication + Smart Device Management
+    └── Authentication + residential device management
+```
 
+---
 
-🔮 Future Work
+## 🚀 Getting Started
 
-* Energy consumption analytics
-* Automation rules
-* Alerts and notifications
-* Advanced logging and monitoring
-* Mobile app integration
+### Prerequisites
+
+* Java JDK 11 or higher
+* Maven
+* MySQL
+* Git
+
+### Installation Steps
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Sanivada-Keerthana/Smart_Home_Energy_Management_System.git
+   ```
+
+2. Switch to the required module:
+
+   ```bash
+   git checkout module2_devicemanagement
+   ```
+
+3. Configure database credentials in `application.properties`.
+
+4. Run the application:
+
+   ```bash
+   mvn spring-boot:run
+   ```
+
+---
+
+## 🔮 Future Enhancements
+
+Planned features for upcoming modules:
+
+✨ Real-time energy consumption tracking
+✨ Energy usage analytics & reports
+✨ Peak-hour alerts and notifications
+✨ Device scheduling and automation rules
+✨ Admin dashboards for residential monitoring
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 📘 About the Project
+
+The **Smart Residential Energy Management System (SREMS)** is built to simulate a real-world residential energy platform, emphasizing **security**, **access control**, and **structured backend design**—making it suitable for academic projects and scalable enterprise systems.
