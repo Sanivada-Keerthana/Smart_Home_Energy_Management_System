@@ -1,0 +1,46 @@
+<div th:fragment="content" class="p-8">
+
+  <div class="card">
+    <h2 class="page-title">Pending Approvals</h2>
+
+    <div th:if="${success}" class="alert-success" th:text="${success}" style="margin-bottom:12px;padding:10px;border-radius:6px;background:#ecfdf5;color:#065f46;font-weight:700"></div>
+    <div th:if="${error}" class="alert-error" th:text="${error}" style="margin-bottom:12px;padding:10px;border-radius:6px;background:#fff1f2;color:#991b1b;font-weight:700"></div>
+
+    <div class="table-wrapper">
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Requested</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr th:each="a : ${approvals}">
+            <td th:text="${a.requestedUser.username}"></td>
+
+            <td>
+              <span class="badge badge-blue"
+                    th:text="${a.requestedUser.role}">
+              </span>
+            </td>
+
+            <td th:text="${#temporals.format(a.createdAt,'dd MMM yyyy HH:mm')}"></td>
+
+            <td>
+              <form th:action="@{/user/approve/{id}(id=${a.approvalId})}"
+                    method="post"
+                    style="display:inline">
+                <button class="btn btn-success">Approve</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

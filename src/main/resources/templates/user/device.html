@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="content"
+     class="bg-slate-50 text-slate-900 p-6 md:p-10"
+     th:data-role="${role}">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        .glow-active { box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4); }
+        .card-transition { transition: all 0.3s ease-in-out; }
+    </style>
+
+    <!-- TITLE -->
+    <h1 class="text-4xl font-extrabold mb-12 text-zinc-800 text-center uppercase tracking-widest">
+        Device Management
+    </h1>
+
+    <!-- STATS -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <p class="text-[10px] uppercase font-bold text-slate-500">Total Devices</p>
+            <h3 id="totalCount" class="text-3xl font-bold text-violet-600">0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <p class="text-[10px] uppercase font-bold text-slate-500">Active</p>
+            <h3 id="activeCount" class="text-3xl font-bold text-green-600">0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <p class="text-[10px] uppercase font-bold text-slate-500">Inactive</p>
+            <h3 id="inactiveCount" class="text-3xl font-bold text-slate-400">0</h3>
+        </div>
+        <div class="bg-white p-5 rounded-3xl border shadow-sm">
+            <p class="text-[10px] uppercase font-bold text-slate-500">Energy (kWh)</p>
+            <h3 id="totalUsage" class="text-3xl font-bold text-blue-600">0.00</h3>
+        </div>
+    </div>
+
+    <!-- ADD DEVICE -->
+    <div th:if="${role == 'FLAT_OWNER' || role == 'SECRETARY'}"
+         class="mb-12 bg-white p-8 rounded-3xl border shadow-sm">
+
+        <h2 class="text-xl font-semibold mb-6">Add New Device</h2>
+
+        <form id="deviceForm" class="flex flex-wrap gap-4">
+            <input id="deviceName" placeholder="Device Name" required
+                   class="p-3 border rounded-xl w-64"/>
+
+            <input id="deviceType" placeholder="Device Type (Light / AC / Fan)"
+                   class="p-3 border rounded-xl w-64"/>
+
+            <button class="bg-violet-600 text-white px-6 py-3 rounded-xl">
+                Connect Device
+            </button>
+        </form>
+    </div>
+
+    <!-- DEVICES GRID -->
+    <div id="dashboard"
+         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+    <!-- SCRIPT -->
+    <script>
+        const role = document.querySelector('[data-role]').dataset.role;
+
+        // DOM references for dynamic content
+        const totalCount = document.getElementById('totalCount');
+        const activeCount = document.getElementById('activeCount');
+        const inactiveCount = document.getElementById('inactiveCount');
+        const totalUsage = document.getElementById('totalUsage');
+        const dashboard = document.getElementById('dashboard');
+        const deviceForm = document.getElementById('deviceForm');
+        const deviceName = document.getElementById('deviceName');
+        const deviceType = document.getElementById('deviceType');
+
+        function getIcon(type = '') {
+            type = type.toLowerCase();
+
+            if (type.includes('ac') || type.includes('air conditioner')) return '❄️';
+            if (type.includes('fan')) return '🌀';
+            if (type.includes('light') || type.includes('lamp')) return '💡';
+            if (type.includes('tv') || type.includes('television')) return '📺';
+            if (type.includes('fridge') || type.includes('refrigerator')) return '🧊';
+            if (type.includes('washing')) return '🧺';
+            if (type.includes('oven') || type.includes('microwave')) return '🔥';
+            if (type.includes('geyser') || type.includes('heater')) return '🚿';
+            if (type.includes('computer') || type.includes('laptop')) return '💻';
+            if (type.includes('router') || type.includes('wifi')) return '📡';
+            if (type.includes('camera') || type.includes('cctv')) return '📷';
+            if (type.includes('speaker')) return '🔊';
+            if (type.includes('iron')) return '👕';
+            if (type.includes('pump') || type.includes('motor')) return '🚰';
+
+            return '🔌'; // default
+        }
+
+
+        function getPower(type = '') {
+            type = type.toLowerCase();
+
+            if (type.includes('ac') || type.includes('air conditioner')) return 1500;
+            if (type.includes('fan')) return 150;
+            if (type.includes('light') || type.includes('lamp')) return 50;
+            if (type.includes('tv') || type.includes('television')) return 200;
+            if (type.includes('fridge') || type.includes('refrigerator')) return 300;
+            if (type.includes('washing')) return 500;
+            if (type.includes('oven') || type.includes('microwave')) return 1200;
+            if (type.includes('geyser') || type.includes('heater')) return 2000;
+            if (type.includes('computer') || type.includes('laptop')) return 250;
+            if (type.includes('router') || type.includes('wifi')) return 20;
+            if (type.includes('camera') || type.includes('cctv')) return 15;
+            if (type.includes('speaker')) return 60;
+            if (type.includes('iron')) return 1000;
+            if (type.includes('pump') || type.includes('motor')) return 750;
+
+            return 100; // default
+        }
+
+
+        async function loadDashboard(){
+            const res = await fetch('/api/devices', {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (res.status === 401) {
+                // Session missing or expired - go to login
+                window.location.href = '/login';
+                return;
+            }
+
+            if (!res.ok) {
+                console.error('Failed to load devices', await res.text());
+                return;
+            }
+
+            const devices = await res.json();
+
+            // STATS
+            totalCount.innerText = devices.length;
+            const active = devices.filter(d => d.status === 'ON').length;
+            activeCount.innerText = active;
+            inactiveCount.innerText = devices.length - active;
+
+            let usage = 0;
+            devices.forEach(d => usage += d.consumption || 0);
+            totalUsage.innerText = usage.toFixed(2);
+
+            dashboard.innerHTML = devices.map(d => `
+                <div class="bg-white p-6 rounded-3xl border card-transition ${d.status === 'ON' ? 'border-violet-500 glow-active' : ''}">
+
+                    <div class="text-4xl mb-3">${getIcon(d.deviceType)}</div>
+
+                    <div id="view-${d.id}">
+                        <h2 class="text-2xl font-bold">${d.deviceName}</h2>
+                        <p class="text-xs text-slate-400">${d.deviceType}</p>
+                        <p class="text-xs text-slate-400">Power: ${d.powerRating} W</p>
+                        <p class="text-xs text-slate-400 mb-2">Consumption: ${(d.consumption || 0).toFixed(2)} kWh</p>
+                    </div>
+
+                    <div id="edit-${d.id}" class="hidden">
+                        <input id="name-${d.id}" class="p-2 border rounded w-full mb-2" value="${d.deviceName}" />
+                        <input id="type-${d.id}" class="p-2 border rounded w-full mb-2" value="${d.deviceType}" />
+                        <input id="power-${d.id}" type="number" class="p-2 border rounded w-full mb-2" value="${d.powerRating}" />
+                    </div>
+
+                    <div class="flex justify-between items-center mt-4">
+                        <div>
+                            <span class="${d.status === 'ON' ? 'text-green-600' : 'text-slate-400'}">${d.status}</span>
+
+                            <div class="mt-2 text-sm">
+                                ${role === 'FLAT_OWNER' || role == 'SECRETARY' ? `
+                                    <a id="editBtn-${d.id}" href="javascript:void(0)" onclick="enableEdit(${d.id})" class="text-violet-600 underline mr-4">Update</a>
+                                    <a id="save-${d.id}" href="javascript:void(0)" onclick="saveDevice(${d.id})" class="text-violet-600 underline hidden mr-4">Update</a>
+                                    <a id="cancel-${d.id}" href="javascript:void(0)" onclick="cancelEdit(${d.id})" class="text-slate-500 underline hidden mr-4">Cancel</a>
+                                    <a href="javascript:void(0)" onclick="deleteDevice(${d.id})" class="text-red-600 underline">Remove</a>
+                                ` : ``}
+                            </div>
+                        </div>
+
+                        <div>
+                            ${role !== 'FLAT_GUEST' ? `
+                                <button onclick="toggleDevice(${d.id}, '${d.status}')" class="px-5 py-2 rounded-xl ${d.status === 'ON' ? 'bg-slate-200' : 'bg-violet-600 text-white'}">TURN ${d.status === 'ON' ? 'OFF' : 'ON'}</button>
+                            ` : ``}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function enableEdit(id){
+            document.getElementById(`view-${id}`).classList.add('hidden');
+            document.getElementById(`edit-${id}`).classList.remove('hidden');
+            document.getElementById(`save-${id}`).classList.remove('hidden');
+            document.getElementById(`cancel-${id}`).classList.remove('hidden');
+            const editBtn = document.getElementById(`editBtn-${id}`);
+            if (editBtn) editBtn.classList.add('hidden');
+        }
+
+        function cancelEdit(id){
+            document.getElementById(`view-${id}`).classList.remove('hidden');
+            document.getElementById(`edit-${id}`).classList.add('hidden');
+            document.getElementById(`save-${id}`).classList.add('hidden');
+            document.getElementById(`cancel-${id}`).classList.add('hidden');
+            const editBtn = document.getElementById(`editBtn-${id}`);
+            if (editBtn) editBtn.classList.remove('hidden');
+        }
+
+        async function saveDevice(id){
+            const nameEl = document.getElementById(`name-${id}`);
+            const typeEl = document.getElementById(`type-${id}`);
+            const powerEl = document.getElementById(`power-${id}`);
+
+            const deviceNameVal = nameEl ? nameEl.value : null;
+            const deviceTypeVal = typeEl ? typeEl.value : null;
+            const powerVal = powerEl ? Number(powerEl.value) : null;
+
+            const res = await fetch(`/api/devices/${id}`, {
+                method:'PUT',
+                credentials: 'include',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({
+                    deviceName: deviceNameVal,
+                    deviceType: deviceTypeVal,
+                    powerRating: powerVal || getPower(deviceTypeVal)
+                })
+            });
+
+            if (!res.ok) console.error('Failed to update device', await res.text());
+
+            // Reset UI for this card (reload will also update)
+            cancelEdit(id);
+            loadDashboard();
+        }
+
+        async function toggleDevice(id, status){
+            const newStatus = status === 'ON' ? 'OFF' : 'ON';
+
+            await fetch(`/api/devices/${id}/toggle?status=${newStatus}`, {
+                method: 'PUT',
+                credentials: 'include'
+            });
+
+            loadDashboard();
+        }
+
+        async function deleteDevice(id){
+            if(confirm('Remove this device?')){
+                await fetch(`/api/devices/${id}`, { method:'DELETE' , credentials: 'include'});
+                loadDashboard();
+            }
+        }
+
+        deviceForm?.addEventListener('submit', async e => {
+            e.preventDefault();
+            const res = await fetch('/api/devices', {
+                method:'POST',
+                credentials: 'include',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({
+                    deviceName: deviceName.value,
+                    deviceType: deviceType.value,
+                    powerRating: getPower(deviceType.value)
+                })
+            });
+            if (!res.ok) console.error('Failed to add device', await res.text());
+            e.target.reset();
+            loadDashboard();
+        });
+
+        loadDashboard();
+    </script>
+
+</div>
+
+</body>
+</html>

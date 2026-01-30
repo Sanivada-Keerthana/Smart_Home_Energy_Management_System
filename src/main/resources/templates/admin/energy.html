@@ -1,0 +1,63 @@
+<div th:fragment="content">
+
+  <!-- PAGE HEADER -->
+  <div class="card">
+    <h2 class="page-title">Energy Overview</h2>
+    <p style="color:#64748b">
+      Apartment-wide energy analytics (read-only for Admin).
+    </p>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="grid" style="margin-top:25px">
+
+    <div class="card stat-card">
+      <span class="stat-title">⚡ Total Energy</span>
+      <div id="totalEnergy" class="stat-value">— kWh</div>
+    </div>
+
+    <div class="card stat-card">
+      <span class="stat-title">🏠 Flats Usage</span>
+      <div id="flatsUsage" class="stat-value">— kWh</div>
+    </div>
+
+    <div class="card stat-card">
+      <span class="stat-title">🏢 Common Areas</span>
+      <div id="commonUsage" class="stat-value">— kWh</div>
+    </div>
+
+    <div class="card stat-card">
+      <span class="stat-title">👥 Active Users</span>
+      <div id="activeUsers" class="stat-value">—</div>
+    </div>
+
+  </div>
+
+  <!-- CHARTS -->
+  <div class="energy-layout">
+
+    <!-- LIVE BLOCK TIMESERIES (dynamic) -->
+    <div class="card chart-card" style="margin-top:20px">
+      <h3>Block Consumption Over Time</h3>
+      <canvas id="blockTimeseries" height="160"></canvas>
+      <div id="blockTimeseriesInfo" style="margin-top:8px;color:#64748b;font-weight:600">No timeseries data yet</div>
+    </div>
+
+  </div>
+
+  <!-- FLAT TABLE -->
+  <div class="card" style="margin-top:20px">
+    <h3>Flat Consumption (kWh) <small id="lastUpdated" style="margin-left:12px;color:#6b7280;font-weight:600">(updated: —)</small></h3>
+    <table class="table" id="flatTable" style="width:100%;margin-top:12px">
+      <thead>
+        <tr><th>Block</th><th>Flat</th><th>Consumption (kWh)</th></tr>
+      </thead>
+      <tbody id="flatBody"><tr><td colspan="3">Loading...</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- DYNAMIC SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/energy-admin.js"></script>
+
+</div>

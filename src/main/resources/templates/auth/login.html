@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Smart Residential Energy Management System</title>
+<!-- styles UNCHANGED -->
+ <style>
+:root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --dark: #2c2c2c;
+    --light: #f9f9f9;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    background: rgba(255,255,255,0.95);
+    padding: 12px 0;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+header img {
+    width: 85px;
+    margin-bottom: 5px;
+}
+
+header h1 {
+    font-size: 22px;
+    color: var(--dark);
+}
+
+/* Center container */
+.container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Glass card */
+.login-card {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px 35px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    animation: fadeSlide 0.6s ease;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-title h2 {
+    font-size: 28px;
+    color: var(--dark);
+}
+
+.login-title p {
+    font-size: 14px;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* Messages */
+.message {
+    display: none;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.error {
+    background: #ffeaea;
+    color: #c62828;
+    border-left: 4px solid #c62828;
+}
+
+.success {
+    background: #eaffea;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+}
+
+.message.show {
+    display: block;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 6px;
+    display: block;
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Links */
+.links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.links a {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    margin: 0 6px;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.signup {
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+    font-size: 14px;
+}
+
+.signup a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Footer */
+footer {
+    background: rgba(255,255,255,0.9);
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <img src="/images/srems_logo.png" alt="Logo">
+    <h1>Smart Residential Energy Management System</h1>
+</header>
+
+<div class="container">
+<div class="login-card">
+
+<div class="login-title">
+    <h2>Welcome Back</h2>
+    <p>Login to manage your apartment energy</p>
+</div>
+
+<div id="errorMessage" class="message error"></div>
+<div id="successMessage" class="message success"></div>
+
+<form onsubmit="handleLogin(event)">
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" required>
+    </div>
+
+    <div class="form-group" style="position: relative;">
+        <label>Password</label>
+        <input type="password" id="password" required>
+        <img id="toggleEye" src="/images/open_eye.png"
+             onclick="togglePassword()"
+             style="position:absolute; right:14px; top:38px; width:20px; cursor:pointer;">
+    </div>
+
+    <button id="loginBtn">Login</button>
+</form>
+
+<div class="links">
+    <a href="/forgot-password">Forgot Password?</a>
+</div>
+
+<div class="signup">
+    Don’t have an account? <a href="/register">Sign Up</a>
+</div>
+
+</div>
+</div>
+
+<footer>© 2026 Smart Residential Energy Management System</footer>
+
+<script>
+const API_URL = '/api/auth';
+
+async function handleLogin(e) {
+    e.preventDefault();
+
+    const username = usernameInput();
+    const password = passwordInput();
+
+    try {
+        const res = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            credentials: 'include',
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            showError(data.message || "Login failed");
+            return;
+        }
+
+        showSuccess("Login successful! Redirecting...");
+        setTimeout(() => location.href = "/dashboard", 1500);
+
+    } catch {
+        showError("Server not reachable");
+    }
+}
+
+function usernameInput(){ return document.getElementById("username").value.trim(); }
+function passwordInput(){ return document.getElementById("password").value; }
+
+function showError(msg){
+    errorMessage.textContent = msg;
+    errorMessage.classList.add("show");
+    successMessage.classList.remove("show");
+}
+function showSuccess(msg){
+    successMessage.textContent = msg;
+    successMessage.classList.add("show");
+    errorMessage.classList.remove("show");
+}
+function togglePassword(){
+    const p = password;
+    toggleEye.src = p.type==="password"
+        ? (p.type="text", "/images/closed_eye.png")
+        : (p.type="password", "/images/open_eye.png");
+}
+</script>
+
+</body>
+</html>

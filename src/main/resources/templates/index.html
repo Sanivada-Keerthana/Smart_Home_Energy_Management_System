@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Residential Energy Management System</title>
+
+<style>
+:root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --dark: #2c2c2c;
+    --light: #f5f6fa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ================= HEADER ================= */
+header {
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo img {
+    width: 45px;
+}
+
+.logo h2 {
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+select {
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+.btn {
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    background: var(--primary);
+    color: white;
+}
+
+.btn.signup {
+    background: var(--secondary);
+}
+
+/* ================= HERO ================= */
+.hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 36px;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    max-width: 800px;
+    margin: auto;
+    font-size: 16px;
+}
+
+/* ================= MODULES ================= */
+.modules {
+    background: var(--light);
+    padding: 50px 20px;
+    flex: 1;
+}
+
+.modules h2 {
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 26px;
+    color: var(--dark);
+}
+
+/* 2 × 3 MATRIX */
+.card-container {
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+}
+
+.card-content {
+    position: relative;
+    z-index: 1;
+}
+
+.icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #555;
+}
+
+.card:hover h3,
+.card:hover p {
+    color: white;
+}
+
+/* ================= FOOTER ================= */
+footer {
+    background: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">
+        <img src="/images/srems_logo.png" alt="Logo">
+        <h2 id="appTitle">Smart Residential Energy Management System</h2>
+    </div>
+
+    <div class="nav-buttons">
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="en">EN</option>
+            <option value="ta">தமிழ்</option>
+            <option value="te">తెలుగు</option>
+            <option value="hi">हिंदी</option>
+        </select>
+        <button class="btn" onclick="location.href='/login'">Login</button>
+        <button class="btn signup" onclick="location.href='/register'">Signup</button>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <h1 id="heroTitle">Smart Residential Energy Management</h1>
+    <p id="heroDesc">
+        Monitor, control, and optimize energy usage across flats
+        and shared community spaces using smart automation.
+    </p>
+</section>
+
+<!-- MODULES -->
+<section class="modules">
+    <h2 id="moduleTitle">System Modules</h2>
+
+    <div class="card-container">
+        <div class="card"><div class="card-content"><div class="icon">👥</div><h3 id="m1t"></h3><p id="m1d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">🏠</div><h3 id="m2t"></h3><p id="m2d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">🏢</div><h3 id="m3t"></h3><p id="m3d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">⚡</div><h3 id="m4t"></h3><p id="m4d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">⏱️</div><h3 id="m5t"></h3><p id="m5d"></p></div></div>
+        <div class="card"><div class="card-content"><div class="icon">📊</div><h3 id="m6t"></h3><p id="m6d"></p></div></div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    © 2026 Smart Residential Energy Management System
+</footer>
+
+<script>
+const data = {
+    en: {
+        hero: "Smart Residential Energy Management",
+        desc: "Monitor, control, and optimize energy usage across flats and common areas.",
+        modules: [
+            ["User & Role Management","Secure login, approvals, and role-based access control."],
+            ["Flat Energy Management","Manage devices and energy usage inside individual flats."],
+            ["Common Area Management","Monitor and control shared apartment facilities."],
+            ["Energy Monitoring","Track real-time and historical energy consumption."],
+            ["Automation & Scheduling","Automate devices based on time and energy rules."],
+            ["Reports & Analytics","Analyze usage trends and optimize energy efficiency."]
+        ]
+    },
+    ta: {
+        hero: "ஸ்மார்ட் குடியிருப்பு மின்சக்தி மேலாண்மை",
+        desc: "வீடுகள் மற்றும் பொதுப்பகுதிகளில் மின்சார பயன்பாட்டை நிர்வகிக்கவும்.",
+        modules: [
+            ["பயனர் மேலாண்மை","பாதுகாப்பான உள்நுழைவு மற்றும் அனுமதிகள்."],
+            ["வீட்டு மின்சாரம்","தனிப்பட்ட வீட்டு சாதனங்கள்."],
+            ["பொதுப் பகுதிகள்","லிஃப்ட், பார்கிங், ஜிம் மேலாண்மை."],
+            ["மின்சாரம் கண்காணிப்பு","நேரடி பயன்பாடு."],
+            ["தானியக்கம்","அட்டவணை அடிப்படையிலான கட்டுப்பாடு."],
+            ["அறிக்கைகள்","பயன்பாட்டு பகுப்பாய்வு."]
+        ]
+    },
+    te: {
+        hero: "స్మార్ట్ రెసిడెన్షియల్ ఎనర్జీ మేనేజ్‌మెంట్",
+        desc: "ఫ్లాట్లు మరియు సాధారణ ప్రాంతాలలో విద్యుత్ వినియోగ నియంత్రణ.",
+        modules: [
+            ["యూజర్ మేనేజ్‌మెంట్","లాగిన్ & అనుమతులు."],
+            ["ఫ్లాట్ ఎనర్జీ","వ్యక్తిగత పరికరాల నియంత్రణ."],
+            ["కామన్ ఏరియా","లిఫ్ట్ & పార్కింగ్."],
+            ["ఎనర్జీ మానిటరింగ్","వినియోగ ట్రాకింగ్."],
+            ["ఆటోమేషన్","షెడ్యూలింగ్."],
+            ["అనలిటిక్స్","వినియోగ విశ్లేషణ."]
+        ]
+    },
+    hi: {
+        hero: "स्मार्ट रेजिडेंशियल एनर्जी मैनेजमेंट",
+        desc: "फ्लैट और कॉमन एरिया में बिजली उपयोग का प्रबंधन।",
+        modules: [
+            ["यूज़र प्रबंधन","लॉगिन और अनुमोदन।"],
+            ["फ्लैट एनर्जी","घर के उपकरण नियंत्रण।"],
+            ["कॉमन एरिया","लिफ्ट और पार्किंग।"],
+            ["ऊर्जा निगरानी","रीयल टाइम ट्रैकिंग।"],
+            ["स्वचालन","समय आधारित नियंत्रण।"],
+            ["विश्लेषण","ऊर्जा रिपोर्ट।"]
+        ]
+    }
+};
+
+function changeLanguage() {
+    const lang = document.getElementById("languageSelect").value;
+    document.getElementById("heroTitle").innerText = data[lang].hero;
+    document.getElementById("heroDesc").innerText = data[lang].desc;
+
+    data[lang].modules.forEach((m, i) => {
+        document.getElementById(`m${i+1}t`).innerText = m[0];
+        document.getElementById(`m${i+1}d`).innerText = m[1];
+    });
+}
+
+changeLanguage();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!-- Fragment: visibleUsers -->
+<div th:fragment="visibleUsers">
+
+  <div th:if="${visibleUsers != null and !#lists.isEmpty(visibleUsers)}" class="card" style="margin-top:18px">
+    <div class="section-header">
+      <span th:text="${role == 'FLAT_OWNER' ? 'Flat Members' : (role == 'SECRETARY' ? 'Block Users' : 'Users')}">Users</span>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="u : ${visibleUsers}">
+            <td th:text="${u.username}">username</td>
+            <td><span class="badge badge-blue" th:text="${u.role}">ROLE</span></td>
+            <td>
+              <span class="status-pill active" th:if="${u.active}">ACTIVE</span>
+              <span class="status-pill locked" th:if="${!u.active}">DISABLED</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

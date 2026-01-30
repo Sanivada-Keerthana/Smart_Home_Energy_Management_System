@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="content">
+
+  <div class="profile-wrapper">
+
+    <!-- PAGE TITLE -->
+    <div style="background:linear-gradient(135deg,#667eea,#764ba2);padding:18px;border-radius:12px 12px 0 0;color:#fff;margin-bottom:18px">
+      <h1 class="page-title" style="color:#fff;margin:0">My Profile</h1>
+    </div>
+
+    <!-- HEADER CARD -->
+    <div class="card profile-header" style="display:flex;align-items:center;gap:18px">
+      <img th:src="@{/images/avatar.png}" class="profile-avatar" alt="Avatar">
+
+      <div class="profile-meta">
+        <h2 th:text="${user != null ? user.username : 'Guest'}">User</h2>
+        <span th:text="${user != null ? user.role : ''}">GUEST</span>
+        <div style="color:#64748b;font-size:13px;margin-top:6px" th:text="${user != null ? user.email : ''}"></div>
+      </div>
+
+      <div style="margin-left:auto">
+        <button type="button" id="editBtn" onclick="editProfile()" class="btn-edit">Edit Profile</button>
+      </div>
+    </div>
+
+    <!-- Visible users (owner sees flat; secretary sees block) -->
+    <div th:replace="~{fragments/users :: visibleUsers}"></div>
+
+    <!-- FORM CARD -->
+    <form th:action="@{/user/profile/update}" method="post" id="profileForm">
+
+      <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+      <div class="card" style="margin-top:20px">
+
+        <div th:if="${profileError}" class="alert-error" style="margin-bottom:8px;padding:8px;border-radius:6px;background:#fff1f2;color:#991b1b;font-weight:700" th:text="${profileError}"></div>
+        <div th:if="${profileSaved}" class="alert-success" style="margin-bottom:8px;padding:8px;border-radius:6px;background:#ecfccb;color:#166534;font-weight:700" th:text="${profileSaved}"></div>
+
+        <div class="section-header">
+          <span>Account Details</span>
+        </div>
+
+        <div class="profile-form">
+
+          <div>
+            <label>Username</label>
+            <input name="username"
+                   th:value="${user != null ? user.username : ''}"
+                   class="editable full"
+                   readonly>
+          </div>
+
+          <div>
+            <label>Email</label>
+            <input name="email"
+                   th:value="${user != null ? user.email : ''}"
+                   class="editable full"
+                   readonly>
+          </div>
+
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Role</label>
+          <input readonly class="full" th:value="${user != null ? user.role : ''}">
+        </div>
+
+        <div class="security-box hidden" id="security">
+          <div class="section-header" style="margin-top:18px"><span>Security</span></div>
+
+          <div class="profile-form full">
+            <div>
+              <label>New Password</label>
+              <input type="password" name="password" placeholder="New Password">
+            </div>
+
+            <div>
+              <label>Confirm Password</label>
+              <input type="password" name="confirmPassword" placeholder="Confirm Password">
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-actions" style="justify-content:flex-end">
+          <button type="button" id="cancelBtn" onclick="cancelEdit()" class="btn-reset hidden">Cancel</button>
+          <button type="submit" id="saveBtn" class="btn-save hidden">Save Changes</button>
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+<script>
+function editProfile(){
+  document.querySelectorAll('.editable')
+    .forEach(i => i.removeAttribute('readonly'));
+
+  document.getElementById('security').classList.remove('hidden');
+  document.getElementById('saveBtn').classList.remove('hidden');
+  document.getElementById('cancelBtn').classList.remove('hidden');
+  document.getElementById('editBtn').classList.add('hidden');
+}
+
+function cancelEdit(){
+  // simple cancel: reload page to reset values
+  window.location.reload();
+}
+</script>
+
+</div>
+</body>
+</html>

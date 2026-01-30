@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+  <h1 class="text-2xl font-bold">Energy Tracking</h1>
+
+  <div class="card" style="margin-top:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>My Devices</h2>
+      <div>
+        <button id="refreshBtn" class="btn">Refresh</button>
+      </div>
+    </div>
+
+    <table class="table" id="devicesTable" style="width:100%;margin-top:12px">
+      <thead>
+        <tr>
+          <th>Device</th>
+          <th>Type</th>
+          <th>Power (W)</th>
+          <th>Consumption (kWh)</th>
+          <th>Active Time</th>
+          <th>Status</th>
+          <th th:if="${canToggle}">Control</th>
+        </tr>
+      </thead>
+      <tbody id="devicesBody">
+        <tr><td colspan="7">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="/js/energy-user.js"></script>
+</div>
+</body>
+</html>

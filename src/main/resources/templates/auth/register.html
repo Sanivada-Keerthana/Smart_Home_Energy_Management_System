@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register | Smart Residential Energy Management System</title>
+
+<style>
+:root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: #fff;
+    padding: 12px;
+    text-align: center;
+}
+
+header img { width: 90px; }
+header h1 { font-size: 22px; }
+
+.container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: white;
+    width: 100%;
+    max-width: 520px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+h2 { text-align: center; margin-bottom: 8px; }
+
+p {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.form-group { margin-bottom: 16px; }
+
+label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    border: 2px solid #ddd;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.strength-bar {
+    height: 5px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.strength-indicator {
+    height: 100%;
+    width: 0;
+    transition: 0.3s;
+}
+
+button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.message {
+    display: none;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+}
+
+.message.show { display: block; }
+.error { background: #ffeaea; color: #c62828; }
+.success { background: #eaffea; color: #2e7d32; }
+
+footer {
+    background: #fff;
+    text-align: center;
+    padding: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <img src="/images/srems_logo.png" alt="Logo">
+    <h1>Smart Residential Energy Management System</h1>
+</header>
+
+<div class="container">
+<div class="card">
+
+<h2>Create Account</h2>
+<p>Register for your apartment energy system</p>
+
+<div id="errorMessage" class="message error"></div>
+<div id="successMessage" class="message success"></div>
+
+<form onsubmit="handleSignup(event)">
+
+    <!-- HIDDEN IDS -->
+    <input type="hidden" id="blockId">
+    <input type="hidden" id="commonAreaId">
+
+    <!-- ROLE -->
+    <div class="form-group">
+        <label>Role</label>
+        <select id="role" required onchange="handleRoleChange()">
+            <option value="">Select Role</option>
+            <option value="FLAT_OWNER">Flat Owner</option>
+            <option value="FLAT_MEMBER">Flat Member</option>
+            <option value="FLAT_GUEST">Flat Guest</option>
+            <option value="SECRETARY">Secretary</option>
+            <option value="SECURITY">Security</option>
+            <option value="STAFF">Staff</option>
+        </select>
+    </div>
+
+    <!-- BLOCK / COMMON AREA -->
+    <div class="form-group">
+        <label>Block / Common Area</label>
+        <input type="text"
+               id="areaInput"
+               placeholder="Eg: A or Park"
+               onblur="validateArea()"
+               required>
+    </div>
+
+    <!-- FLAT -->
+    <div class="form-group" id="flatGroup">
+        <label>Flat Number</label>
+        <input type="text" id="flatNumber" placeholder="Eg: 101">
+    </div>
+
+    <!-- USER INFO -->
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" required>
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" required>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="form-group" style="position:relative;">
+        <label>Password</label>
+        <input type="password" id="newPassword" oninput="checkStrength()" required>
+        <img id="toggleNewPassword" src="/images/open_eye.png"
+             onclick="toggleField('newPassword','toggleNewPassword')"
+             style="position:absolute; right:14px; top:38px; width:20px; cursor:pointer;">
+        <div class="strength-bar">
+            <div id="strengthIndicator" class="strength-indicator"></div>
+        </div>
+    </div>
+
+    <div class="form-group" style="position:relative;">
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword" required>
+        <img id="toggleConfirmPassword" src="/images/open_eye.png"
+             onclick="toggleField('confirmPassword','toggleConfirmPassword')"
+             style="position:absolute; right:14px; top:38px; width:20px; cursor:pointer;">
+    </div>
+
+    <button type="submit">Create Account</button>
+</form>
+
+</div>
+</div>
+
+<footer>
+    © 2026 Smart Residential Energy Management System
+</footer>
+
+<script>
+const API_URL = "http://localhost:8081/api/auth";
+const VALIDATE_URL = "http://localhost:8081/api/public/validate-area";
+
+/* ELEMENTS */
+const blockId = document.getElementById("blockId");
+const commonAreaId = document.getElementById("commonAreaId");
+const areaInput = document.getElementById("areaInput");
+const flatGroup = document.getElementById("flatGroup");
+const flatNumber = document.getElementById("flatNumber");
+const role = document.getElementById("role");
+const username = document.getElementById("username");
+const email = document.getElementById("email");
+const newPassword = document.getElementById("newPassword");
+const confirmPassword = document.getElementById("confirmPassword");
+const strengthIndicator = document.getElementById("strengthIndicator");
+const errorMessage = document.getElementById("errorMessage");
+const successMessage = document.getElementById("successMessage");
+
+/* ROLE LOGIC */
+function handleRoleChange() {
+    const r = role.value;
+    if (r === "SECRETARY" || r === "SECURITY" || r === "STAFF") {
+        flatGroup.style.display = "none";
+        flatNumber.value = "";
+    } else {
+        flatGroup.style.display = "block";
+    }
+}
+
+/* VALIDATE AREA */
+async function validateArea() {
+    const name = areaInput.value.trim();
+    if (!name) return false;
+
+    const res = await fetch(`${VALIDATE_URL}?name=${encodeURIComponent(name)}`);
+    const data = await res.json();
+
+    if (!res.ok || !data.valid) {
+        showError("Invalid Block / Common Area");
+        return false;
+    }
+
+    blockId.value = "";
+    commonAreaId.value = "";
+
+    if (data.type === "BLOCK") blockId.value = data.id;
+    if (data.type === "COMMON_AREA") commonAreaId.value = data.id;
+
+    return true;
+}
+
+/* SIGNUP */
+async function handleSignup(e) {
+    e.preventDefault();
+
+    if (!await validateArea()) return;
+
+    if (newPassword.value !== confirmPassword.value) {
+        showError("Passwords do not match");
+        return;
+    }
+
+    const res = await fetch(`${API_URL}/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            username: username.value.trim(),
+            email: email.value.trim(),
+            password: newPassword.value,
+            role: role.value,
+            blockId: blockId.value || null,
+            commonAreaId: commonAreaId.value || null,
+            flatNumber: flatNumber.value || null
+        })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+        showSuccess("Registration successful. Awaiting approval.");
+        setTimeout(() => location.href = "/login", 2000);
+    } else {
+        showError(data.message || "Registration failed");
+    }
+}
+
+/* PASSWORD STRENGTH */
+function checkStrength() {
+    let s = 0;
+    const p = newPassword.value;
+    if (p.length >= 8) s += 25;
+    if (/[A-Z]/.test(p)) s += 25;
+    if (/[a-z]/.test(p)) s += 25;
+    if (/\d/.test(p)) s += 25;
+
+    strengthIndicator.style.width = s + "%";
+    strengthIndicator.style.background =
+        s < 50 ? "red" : s < 75 ? "orange" : "green";
+}
+
+/* MESSAGES */
+function showError(msg) {
+    errorMessage.textContent = msg;
+    errorMessage.classList.add("show");
+    successMessage.classList.remove("show");
+}
+
+function showSuccess(msg) {
+    successMessage.textContent = msg;
+    successMessage.classList.add("show");
+    errorMessage.classList.remove("show");
+}
+
+// Toggle password visibility for a given input and icon
+function toggleField(fieldId, imgId) {
+    const f = document.getElementById(fieldId);
+    const img = document.getElementById(imgId);
+    if (!f || !img) return;
+    if (f.type === 'password') {
+        f.type = 'text';
+        img.src = '/images/closed_eye.png';
+    } else {
+        f.type = 'password';
+        img.src = '/images/open_eye.png';
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="content">
+
+  <!-- PURPOSE -->
+  <div class="settings-purpose">
+    PURPOSE: Define global system behavior, security rules, and alert thresholds.
+  </div>
+
+  <!-- SYNC STATUS -->
+  <div class="sync-status">
+    CONFIGURATION STATUS:
+    <span th:class="${settings.synced} ? 'sync-ok' : 'sync-warn'"
+          th:text="${settings.synced} ? '✔ SYNCHRONIZED' : '⚠ OUT OF SYNC'">
+    </span>
+  </div>
+
+  <form th:action="@{/admin/settings/save}" method="post">
+    <div th:if="${_csrf} != null">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    </div>
+
+    <!-- success message -->
+    <div th:if="${success}" class="alert-success" th:text="${success}" style="margin-bottom:12px;padding:10px;border-radius:6px;background:#ecfdf5;color:#065f46;font-weight:700"></div>
+
+    <!-- error message -->
+    <div th:if="${error}" class="alert-error" th:text="${error}" style="margin-bottom:12px;padding:10px;border-radius:6px;background:#fff1f2;color:#991b1b;font-weight:700"></div>
+
+    <!-- SECTION A -->
+    <div class="card">
+      <div class="section-header">🛂 Approval Rules</div>
+
+      <div class="toggle">
+        <span>Auto-approve residents</span>
+        <label>
+          <input type="checkbox" name="autoApprove"
+                 th:checked="${settings.autoApprove}">
+          <span class="switch"></span>
+        </label>
+      </div>
+
+      <div class="toggle">
+        <span>Require documents for flat owners</span>
+        <label>
+          <input type="checkbox" name="docRequired"
+                 th:checked="${settings.docRequired}">
+          <span class="switch"></span>
+        </label>
+      </div>
+
+      <div class="toggle">
+        <span>Notify admin on privileged requests</span>
+        <label>
+          <input type="checkbox" name="notifyAdmin"
+                 th:checked="${settings.notifyAdmin}">
+          <span class="switch"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- SECTION B -->
+    <div class="card" style="margin-top:25px">
+      <div class="section-header">⚡ Energy Thresholds</div>
+
+      <div class="form-row">
+        <div>
+          <label>Peak Load Limit (kW)</label>
+          <input type="number" name="peakLimit"
+                 th:value="${settings.peakLimit}">
+        </div>
+
+        <div>
+          <label>High Usage Alert (%)</label>
+          <input type="number" name="highUsageAlert"
+                 th:value="${settings.highUsageAlert}">
+        </div>
+      </div>
+
+      <div class="form-row full">
+        <div>
+          <label>Data Retention (Months)</label>
+          <select name="retentionMonths">
+            <option th:selected="${settings.retentionMonths==6}">6</option>
+            <option th:selected="${settings.retentionMonths==12}">12</option>
+            <option th:selected="${settings.retentionMonths==24}">24</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION C -->
+    <div class="card" style="margin-top:25px">
+      <div class="section-header">🔔 Notifications</div>
+
+      <div class="form-row">
+        <div>
+          <label>Admin Email</label>
+          <input type="text" name="adminEmail"
+                 th:value="${settings.adminEmail}">
+        </div>
+
+        <div>
+          <label>Security Phone</label>
+          <input type="text" name="securityPhone"
+                 th:value="${settings.securityPhone}">
+        </div>
+      </div>
+
+      <div class="toggle">
+        <span>Email on overload</span>
+        <label>
+          <input type="checkbox" name="emailOnOverload"
+                 th:checked="${settings.emailOnOverload}">
+          <span class="switch"></span>
+        </label>
+      </div>
+
+      <div class="toggle">
+        <span>SMS on new registration</span>
+        <label>
+          <input type="checkbox" name="smsOnRegister"
+                 th:checked="${settings.smsOnRegister}">
+          <span class="switch"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="settings-actions">
+      <button type="reset" class="btn-reset">Reset</button>
+      <button type="submit" class="btn-save" id="saveBtn">Save Changes</button>
+    </div>
+
+  </form>
+
+  <script>
+    // Small client-side polish: disable save button while submitting
+    const form = document.querySelector('form[th\:action]') || document.querySelector('form');
+    const saveBtn = document.getElementById('saveBtn');
+    if (form && saveBtn) {
+      form.addEventListener('submit', () => {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+      });
+    }
+  </script>
+
+  </form>
+
+</div>
+
+</body>
+</html>

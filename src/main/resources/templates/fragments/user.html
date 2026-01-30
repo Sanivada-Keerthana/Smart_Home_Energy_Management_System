@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Fragment: flatMembers -->
+<div th:fragment="flatMembers">
+
+  <div th:if="${flatMembers != null and !#lists.isEmpty(flatMembers)}" class="card" style="margin-top:18px">
+    <div class="section-header"><span>Flat Members</span></div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="m : ${flatMembers}">
+            <td th:text="${m.username}">username</td>
+            <td><span class="badge badge-blue" th:text="${m.role}">ROLE</span></td>
+            <td>
+              <span class="status-pill active" th:if="${m.active}">ACTIVE</span>
+              <span class="status-pill locked" th:if="${!m.active}">DISABLED</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+</html>

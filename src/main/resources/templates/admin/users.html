@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="content">
+
+  <!-- PAGE HEADER -->
+  <div class="card">
+    <h2 class="page-title">User Management</h2>
+    <p style="color:#64748b">
+      Manage system users, roles, and access status.
+    </p>
+  </div>
+
+  <div th:if="${success}" class="alert-success" th:text="${success}" style="margin-top:12px;margin-bottom:12px;padding:10px;border-radius:6px;background:#ecfdf5;color:#065f46;font-weight:700"></div>
+  <div th:if="${error}" class="alert-error" th:text="${error}" style="margin-top:12px;margin-bottom:12px;padding:10px;border-radius:6px;background:#fff1f2;color:#991b1b;font-weight:700"></div>
+
+  <!-- USERS TABLE -->
+  <div class="card" style="margin-top:25px">
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th style="text-align:center">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr th:each="u : ${users}">
+
+            <td th:text="${u.username}">username</td>
+
+            <td>
+              <span class="badge badge-blue"
+                    th:text="${u.role}">
+              </span>
+            </td>
+
+            <td>
+              <span class="status-pill active"
+                    th:if="${u.active}">
+                ACTIVE
+              </span>
+
+              <span class="status-pill locked"
+                    th:if="${!u.active}">
+                DISABLED
+              </span>
+            </td>
+
+            <td style="text-align:center">
+
+              <a th:if="${u.active}"
+                 th:href="@{/admin/users/disable/{id}(id=${u.userId})}"
+                 class="btn btn-danger">
+                Disable
+              </a>
+
+              <a th:if="${!u.active}"
+                 th:href="@{/admin/users/enable/{id}(id=${u.userId})}"
+                 class="btn btn-success">
+                Enable
+              </a>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

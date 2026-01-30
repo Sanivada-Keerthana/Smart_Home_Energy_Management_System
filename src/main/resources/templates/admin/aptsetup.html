@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="content">
+
+  <!-- HEADER -->
+  <div class="card">
+    <h2 class="page-title">Apartment Setup</h2>
+    <p class="text-muted">Manage blocks, flats, and common areas</p>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="apt-actions">
+    <button type="button" class="btn-outline" onclick="showForm('blockForm')">
+      ＋ Add Block
+    </button>
+
+    <button type="button" class="btn-outline" onclick="showForm('flatForm')">
+      ＋ Add Flat
+    </button>
+
+    <button type="button" class="btn-outline" onclick="showForm('commonForm')">
+      ＋ Add Common Area
+    </button>
+  </div>
+
+  <!-- ADD BLOCK -->
+  <div id="blockForm" class="card" style="display:none;">
+    <h3>Add New Block</h3>
+    <form th:action="@{/admin/block}" method="post">
+      <input type="text" name="blockName" placeholder="Block Name (Eg: A)" required>
+      <button class="btn-primary">Save Block</button>
+    </form>
+  </div>
+
+  <!-- ADD FLAT -->
+  <div id="flatForm" class="card" style="display:none;">
+    <h3>Add New Flat</h3>
+
+    <form th:action="@{/admin/flat}" method="post">
+      <label>Block</label>
+      <select name="blockId" required>
+        <option th:each="b : ${blocks}"
+                th:value="${b.blockId}"
+                th:text="${b.blockName}">
+        </option>
+      </select>
+
+      <label>Flat Number</label>
+      <input type="text" name="flatNumber" placeholder="Eg: A-405" required>
+
+      <button class="btn-primary">Save Flat</button>
+    </form>
+  </div>
+
+  <!-- ADD COMMON AREA -->
+  <div id="commonForm" class="card" style="display:none;">
+    <h3>Add Common Area</h3>
+
+    <form th:action="@{/admin/common-area}" method="post">
+      <input type="text"
+            name="areaName"
+            placeholder="Eg: Gym, Lift, Parking"
+            required>
+
+      <button class="btn-primary">Save Common Area</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Common Areas</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Area Name</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr th:each="c, stat : ${commonAreas}">
+          <td th:text="${stat.count}">1</td>
+          <td th:text="${c.areaName}">Gym</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- SUMMARY TABLE -->
+  <div class="card">
+    <h3>Current Building Structure</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Block</th>
+          <th>Flat</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr th:each="f : ${flats}">
+          <td th:text="${f.block.blockName}">A</td>
+          <td th:text="${f.flatNumber}">101</td>
+          <td>
+            <span class="status-pill"
+                  th:classappend="${f.ownerAssigned} ? ' active' : ' vacant'"
+                  th:text="${f.ownerAssigned} ? 'Active' : 'Vacant'">
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

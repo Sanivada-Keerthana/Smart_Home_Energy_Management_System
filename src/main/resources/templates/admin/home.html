@@ -1,0 +1,32 @@
+<div th:fragment="content">
+
+  <div class="card">
+    <h1>
+      Welcome back,
+      <span th:text="${username}">Admin</span> 👋
+    </h1>
+    <p style="margin-top:10px;color:#64748b;font-size:15px">
+      Control apartments, users, approvals and energy insights from one powerful dashboard.
+    </p>
+  </div>
+
+  <div class="grid" style="margin-top:30px">
+
+    <div class="card stat-card">
+      <div class="stat-title">Total Blocks</div>
+      <div class="stat-value" th:text="${stats.blocks}">5</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-title">Total Flats</div>
+      <div class="stat-value" th:text="${stats.flats}">120</div>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-title">Total Users</div>
+      <div class="stat-value" th:text="${stats.users}">340</div>
+    </div>
+
+  </div>
+
+</div>

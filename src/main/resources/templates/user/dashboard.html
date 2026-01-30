@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title th:text="${pageTitle} ?: 'Dashboard'">Dashboard</title>
+
+<link rel="stylesheet" th:href="@{/css/admin.css}">
+
+<style>
+/* ===== VARIABLES ===== */
+:root{
+  --primary:#667eea;
+  --secondary:#764ba2;
+  --bg:#f5f6fa;
+  --card:#ffffff;
+  --text:#2c2c2c;
+  --border:#e5e7eb;
+  --shadow:0 10px 25px rgba(0,0,0,.12);
+}
+
+/* ===== BASE ===== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background:var(--bg);color:var(--text);}
+.app{display:flex;min-height:100vh;}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:260px;
+  background:#fff;
+  padding:20px;
+  border-right:1px solid var(--border);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--border);
+}
+.brand img{width:48px;}
+.brand h3{color:var(--primary);}
+
+.menu{
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.menu a{
+  padding:12px;
+  border-radius:10px;
+  text-decoration:none;
+  color:#333;
+  font-weight:600;
+  transition:.3s;
+}
+.menu a:hover,
+.menu a.active{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+}
+
+/* ===== MAIN ===== */
+.main{flex:1;display:flex;flex-direction:column;}
+
+/* ===== TOPBAR ===== */
+.topbar{
+  height:70px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 25px;
+  color:#fff;
+}
+
+.profile-area{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  position:relative;
+  cursor:pointer;
+}
+
+.role-badge{
+  height:34px;
+  border-radius:8px;
+  background:#fff;
+  padding:3px;
+  box-shadow:var(--shadow);
+}
+
+.user-box{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#fff;
+  color:#333;
+  padding:6px 12px;
+  border-radius:25px;
+  font-weight:600;
+}
+
+.avatar{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-weight:700;
+}
+
+/* ===== DROPDOWN ===== */
+.dropdown{
+  position:absolute;
+  top:55px;
+  right:0;
+  width:190px;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  display:none;
+}
+.dropdown a{
+  display:block;
+  padding:12px;
+  text-decoration:none;
+  color:#333;
+  font-weight:600;
+}
+.dropdown a:hover{background:#f5f6fa;}
+.profile-area.open .dropdown{display:block;}
+
+/* ===== CONTENT ===== */
+.content{padding:30px;}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <img th:src="@{/images/srems_logo.png}" alt="Logo">
+      <div class="logo-text">
+        <h3>SREMS</h3>
+        <span>Smart Residential Energy</span>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a th:href="@{/user/dashboard}" th:classappend="${activePage=='user/home'}?'active'">Home</a>
+      <a th:href="@{/user/device}" th:classappend="${activePage=='user/device'}?'active'">Devices</a>
+      <a th:if="${role == 'FLAT_OWNER' or role == 'SECRETARY'}" th:href="@{/user/approvals}" th:classappend="${activePage=='user/approvals'} ? 'active'"> Approvals </a>
+      <a th:href="@{/user/tracking}" th:classappend="${activePage=='user/tracking'}?'active'">Energy</a>
+      <a th:href="@{/user/analytics}" th:classappend="${activePage=='user/analytics'}?'active'">Analytics</a>
+      <!-- <a th:href="@{/user/scheduling}" th:classappend="${activePage=='user/scheduling'}?'active'">Scheduling</a> -->
+      <!-- <a th:href="@{/user/recommendations}" th:classappend="${activePage=='user/recommendations'}?'active'">Recommendations</a> -->
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <h2 th:text="${headerTitle}">Dashboard</h2>
+
+      <div class="profile-area" id="profileBox">
+
+        <img class="role-badge"
+             th:src="${role=='FLAT_OWNER'} ? @{/images/Flat_Owner.png} :
+                     (${role=='FLAT_MEMBER'} ? @{/images/Flat_Member.png} : 
+                     (${role=='FLAT_GUEST'} ? @{/images/Flat_Guest.png} : 
+                     (${role=='SECRETARY'} ? @{/images/Secretary.png} : 
+                     (${role=='SECURITY'} ? @{/images/Security.png} : 
+                     @{/images/Staff.png}))))"/>
+
+        <div class="user-box">
+          <div class="avatar"
+               th:text="${#strings.substring(username,0,1)}">U</div>
+          <span th:text="${username}">User</span>
+        </div>
+
+        <div class="dropdown">
+          <a th:href="@{/profile}">Profile</a>
+          <a th:href="@{/logout}">Logout</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <div th:replace="~{${activePage} :: content}"></div>
+    </main>
+
+    <footer style="background:#fff;text-align:center;padding:10px;">
+      &copy; 2026 Smart Home Energy Management System
+    </footer>
+
+  </div>
+</div>
+
+<script>
+const profileBox = document.getElementById("profileBox");
+
+profileBox.addEventListener("click", e => {
+  e.stopPropagation();
+  profileBox.classList.toggle("open");
+});
+
+document.addEventListener("click", () => {
+  profileBox.classList.remove("open");
+});
+</script>
+
+</body>
+</html>
