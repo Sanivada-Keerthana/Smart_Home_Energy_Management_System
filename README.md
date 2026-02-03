@@ -1,68 +1,169 @@
-# Smart Residential Energy Management System (SREMS) 🏠 
+# 🏠 Smart Residential Energy Management System (SREMS)
 
-A **Java Spring Boot–based backend system** designed to manage energy usage, user access, and smart devices in a residential environment.
-SREMS focuses on **secure authentication**, **role-based access**, and **controlled device operations**, forming a strong foundation for future energy optimization and automation.
-
----
-
-## Project Overview
-
-The **Smart Residential Energy Management System (SREMS)** enables residents and administrators to:
-
-* Securely access the system using role-based authentication
-* Manage smart electrical devices within a residence
-* Control who can view or operate devices
-* Establish a scalable backend for energy monitoring and automation
-
-This project is structured in **incremental modules**, where each module builds upon the previous one.
+The **Smart Residential Energy Management System (SREMS)** is a Java Spring Boot–based backend application designed to **securely manage users, smart devices, and energy data** in a residential apartment environment.  
+The system emphasizes **role-based access control, structured device management, energy monitoring, alerts, analytics, and recommendations**, making it suitable for both **academic projects and real-world simulations**.
 
 ---
 
-## 🔐 Module 1 — Authentication & Access Control
+## 📌 Project Overview
 
-**Branch:** `module1_authentication`
+Modern residential apartments consume large amounts of electricity through individual flats and shared facilities.  
+However, most systems lack:
+- Real-time visibility into energy usage
+- Controlled access to devices
+- Intelligent alerts and recommendations
 
-This module handles secure user access and authorization.
+**SREMS solves these problems** by providing a centralized, secure, and modular backend platform that supports:
+
+- Secure user authentication
+- Role-based access control
+- Smart device management
+- Energy usage monitoring
+- Alerts and analytics
+- Intelligent recommendations for energy savings
+
+The project is developed in **incremental modules**, where each module builds on the previous one.
+
+---
+
+## 🧩 Modules Overview
+
+---
+
+## 🔐 Module 1 — Authentication & Access Control  
+**Branch:** `module1-authentication`
+
+### Purpose
+Module 1 provides **secure entry into the system** and ensures that every user accesses only what they are authorized to.
 
 ### Features
+- User registration and login
+- Secure authentication using Spring Security
+- Role-based access control
+- Session management
+- Prevention of shared credentials and unauthorized access
 
-✔ User registration and login
-✔ Secure authentication using Spring Security
-✔ Role-based access control
+### Supported User Roles
+- **Admin**
+- **Resident (Owner)**
+- **Family Member**
+- **Guest**
+- **Secretary / Security (Apartment staff)**
 
-### User Roles
-
-* **Resident (Owner)**
-* **Family Member**
-* **Guest**
-
-✔ Session management
-✔ Protection against unauthorized access
+This module acts as the **security foundation** for all other modules.
 
 ---
 
-## ⚡ Module 2 — Smart Device Management
+## ⚡ Module 2 — Smart Device Management  
+**Branch:** `module2-device_management`
 
-**Branch:** `module2_devicemanagement`
-
-Extends Module 1 by introducing smart device control within a residential setup.
+### Purpose
+Module 2 enables **registration, control, and monitoring of smart electrical devices** inside flats and common areas.
 
 ### Features
-
-✔ Register and manage residential electrical devices
-✔ Turn devices ON / OFF
-✔ View device status in real time
-✔ Backend-enforced role permissions
+- Add and manage smart devices
+- Turn devices ON / OFF
+- View real-time device status
+- Backend-enforced permission validation
+- Device ownership and area-based restrictions
 
 ### Role-Based Device Permissions
 
-| Role             | View Devices | Control Devices | Add / Remove Devices |
-| ---------------- | ------------ | --------------- | -------------------- |
-| Resident (Owner) | ✅            | ✅               | ✅                    |
-| Family Member    | ✅            | ✅               | ❌                    |
-| Guest            | ✅            | ❌               | ❌                    |
+| Role               | View Devices | Control Devices | Add / Remove Devices |
+|--------------------|--------------|-----------------|----------------------|
+| Resident (Owner)   | ✅           | ✅              | ✅                   |
+| Family Member      | ✅           | ✅              | ❌                   |
+| Guest              | ✅           | ❌              | ❌                   |
+| Admin / Secretary  | ✅           | Common Areas    | ✅                   |
 
-✔ Centralized validation of all device operations
+All device actions pass through **service-layer validation**, ensuring security and consistency.
+
+---
+
+## ⚡ Module 3 — Energy Monitoring & Usage Tracking  
+**Branch:** `module3-energy-monitoring`
+
+### Purpose
+Module 3 tracks and records **energy consumption data** generated by smart devices.
+
+### Features
+- Per-device energy usage tracking
+- Time-stamped energy logs
+- Flat-wise and common-area monitoring
+- Historical energy data storage
+- Foundation for analytics and alerts
+
+### Core Components
+- UsageLog Entity
+- EnergyMonitoringService
+- EnergyMonitoringController
+- UsageRepository
+
+This module provides **real-time and historical visibility** into energy behavior.
+
+---
+
+## 🚨 Module 4 — Alerts & Notification Management  
+**Branch:** `module4-alerts-notifications`
+
+### Purpose
+Module 4 introduces **intelligent alerts** to proactively handle abnormal or unsafe energy usage.
+
+### Features
+- Threshold-based energy alerts
+- Abnormal usage detection
+- Role-based notifications
+- Alert history for auditing
+- Safety and overload warnings
+
+### Core Components
+- Alert Entity
+- AlertService
+- AlertController
+- AlertRepository
+
+This module ensures the system is **preventive rather than reactive**.
+
+---
+
+## 📊 Module 5 — Analytics & Recommendation System  
+**Branch:** `module5-recommendation`
+
+### Purpose
+Module 5 transforms raw energy data into **meaningful insights and recommendations**.
+
+### Features
+- Daily, weekly, and monthly energy analytics
+- Peak usage identification
+- High-consumption device detection
+- Energy-saving recommendations
+- Decision-support insights for users and management
+
+### Core Components
+- AnalyticsService
+- Recommendation Entity
+- RecommendationService
+- RecommendationController
+- RecommendationRepository
+
+This module completes the **intelligent energy optimization cycle**.
+
+---
+
+## 🔗 Module Integration Flow
+
+Module 1 → Authentication & Role Validation
+↓
+Module 2 → Device Registration & Control
+↓
+Module 3 → Energy Usage Tracking
+↓
+Module 4 → Alerts & Notifications
+↓
+Module 5 → Analytics & Recommendations
+
+
+Each module builds logically on the previous one, ensuring a **scalable and maintainable system design**.
 
 ---
 
@@ -70,94 +171,97 @@ Extends Module 1 by introducing smart device control within a residential setup.
 
 SREMS follows a **layered backend architecture**:
 
-* **Controller Layer** – Handles REST/HTTP requests
-* **Service Layer** – Business logic & validations
-* **Repository Layer** – Database interaction
-* **Entity/Model Layer** – Core domain objects
+- **Controller Layer** – Handles REST/HTTP requests
+- **Service Layer** – Business logic and validations
+- **Repository Layer** – Database access using JPA
+- **Entity / Model Layer** – Core domain objects
 
-This structure improves **maintainability**, **scalability**, and **security**.
+This architecture improves:
+- Maintainability
+- Scalability
+- Security
+- Code readability
 
 ---
 
 ## 🛠 Technology Stack
 
-| Category        | Technology      |
-| --------------- | --------------- |
-| Language        | Java            |
-| Framework       | Spring Boot     |
-| Security        | Spring Security |
-| MVC             | Spring MVC      |
-| ORM             | Hibernate / JPA |
-| Database        | MySQL           |
-| Template Engine | Thymeleaf       |
-| Build Tool      | Maven           |
-| Version Control | Git & GitHub    |
+| Category           | Technology            |
+|--------------------|-----------------------|
+| Language           | Java                  |
+| Framework          | Spring Boot           |
+| Security           | Spring Security       |
+| MVC Framework      | Spring MVC            |
+| ORM                | Hibernate / JPA       |
+| Database           | MySQL                 |
+| Template Engine    | Thymeleaf             |
+| Build Tool         | Maven                 |
+| Version Control    | Git & GitHub          |
+| IDE                | Visualstudio Code     |
+| API Testing        | Postman               |
 
 ---
 
 ## 🌿 Branch Structure
 
-```
 main
-├── module1_authentication
-│   └── User authentication & role management
-└── module2_devicemanagement
-    └── Authentication + residential device management
-```
+├── module1-authentication
+├── module2-device_management
+├── module3-energy-monitoring
+├── module4-alerts-notifications
+└── module5-recommendation
+
+
+Each module is developed in an **independent branch** and merged into `main` after testing, following **industry-standard Git practices**.
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-* Java JDK 11 or higher
-* Maven
-* MySQL
-* Git
+- Java JDK 11 or higher
+- Maven
+- MySQL
+- Git
 
 ### Installation Steps
-
 1. Clone the repository:
-
    ```bash
    git clone https://github.com/Sanivada-Keerthana/Smart_Home_Energy_Management_System.git
    ```
+   
+2. Checkout required module branch:
+    ```bash
+    git checkout module2-device_management
+    ```
+    
+3. Configure database credentials in application.properties
+- Run the application:
+    ```bash
+    mvn spring-boot:run
+    ```
+---
 
-2. Switch to the required module:
+🔮 Future Enhancements
 
-   ```bash
-   git checkout module2_devicemanagement
-   ```
-
-3. Configure database credentials in `application.properties`.
-
-4. Run the application:
-
-   ```bash
-   mvn spring-boot:run
-   ```
+* IoT sensor integration
+* AI-based energy prediction
+* Mobile application support
+* Advanced automation rules
+* Cloud deployment
 
 ---
 
-## 🔮 Future Enhancements
+📄 License
 
-Planned features for upcoming modules:
-
-✨ Real-time energy consumption tracking
-✨ Energy usage analytics & reports
-✨ Peak-hour alerts and notifications
-✨ Device scheduling and automation rules
-✨ Admin dashboards for residential monitoring
+This project is licensed under the MIT License.
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License**.
-
----
-
-## 📘 About the Project
-
-The **Smart Residential Energy Management System (SREMS)** is built to simulate a real-world residential energy platform, emphasizing **security**, **access control**, and **structured backend design**—making it suitable for academic projects and scalable enterprise systems.
+📘 About the Project
+The Smart Residential Energy Management System (SREMS) simulates a real-world residential energy platform, emphasizing:
+* Secure access control
+* Modular backend design
+* Scalable architecture
+* Practical energy optimization use cases
+The project is well-suited for academic evaluation, internships, and enterprise-level system design learning.
