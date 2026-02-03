@@ -21,6 +21,8 @@ public class EnergyController {
     @Autowired private DeviceRepository deviceRepository;
     @Autowired private com.srems.srems.repository.DeviceEnergySampleRepository sampleRepository;
 
+    @Autowired private com.srems.srems.service.RecommendationService recommendationService;
+
     // User-level: list devices with energy info (only devices the user can access)
     @GetMapping("/devices")
     public List<Device> getDevicesWithEnergy(HttpSession session) {
@@ -84,5 +86,13 @@ public class EnergyController {
         }
 
         return out;
+    }
+
+    @GetMapping("/recommendations")
+    public java.util.List<com.srems.srems.model.RecommendationDTO> recommendations(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.UNAUTHORIZED, "Session expired");
+
+        return recommendationService.generateForUser(user);
     }
 }

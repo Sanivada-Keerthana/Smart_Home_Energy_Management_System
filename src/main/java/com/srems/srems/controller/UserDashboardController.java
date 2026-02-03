@@ -248,22 +248,25 @@ public class UserDashboardController {
     @PostMapping("/approve/{id}")
     public String approve(@PathVariable Long id, Authentication auth, HttpSession session, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
 
-        String approverRole = auth.getAuthorities()
-                                .iterator()
-                                .next()
-                                .getAuthority();
+        String approverRole = null;
+        if (auth != null && auth.getAuthorities() != null && auth.getAuthorities().iterator().hasNext()) {
+            approverRole = auth.getAuthorities().iterator().next().getAuthority();
+        } else {
+            Object r = session.getAttribute("role");
+            approverRole = r != null ? r.toString() : "ROLE_ANONYMOUS";
+            System.out.println("Warning: Authentication was null in approve(); using session role: " + approverRole);
+        }
 
         Long approverUserId = (Long) session.getAttribute("userId");
 
         try {
             approvalService.approve(id, approverRole, approverUserId);
-            // Per UX requirement, redirect back to the main dashboard and show a concise message
-            redirectAttributes.addFlashAttribute("success", "user approved");
+            redirectAttributes.addFlashAttribute("success", "User added");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", "Approval failed: " + e.getMessage());
         }
 
-        return "redirect:/user/dashboard";
+        return "redirect:/user/approvals";
     }
 
     @PostMapping("/reject/{id}")

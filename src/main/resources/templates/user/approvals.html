@@ -35,6 +35,12 @@
                     style="display:inline">
                 <button class="btn btn-success">Approve</button>
               </form>
+
+              <form th:action="@{/user/reject/{id}(id=${a.approvalId})}"
+                    method="post"
+                    style="display:inline">
+                <button class="btn btn-danger">Reject</button>
+              </form>
             </td>
           </tr>
         </tbody>
