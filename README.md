@@ -155,15 +155,19 @@ This module completes the **intelligent energy optimization cycle**.
 Module 1 → Authentication & Role Validation
 
 ↓
+
 Module 2 → Device Registration & Control
 
 ↓
+
 Module 3 → Energy Usage Tracking
 
 ↓
+
 Module 4 → Alerts & Notifications
 
 ↓
+
 Module 5 → Analytics & Recommendations
 
 
@@ -209,6 +213,7 @@ This architecture improves:
 ## 🌿 Branch Structure
 
 main
+
 ├── module1-authentication
 
 ├── module2-device_management
