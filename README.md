@@ -153,12 +153,16 @@ This module completes the **intelligent energy optimization cycle**.
 ## 🔗 Module Integration Flow
 
 Module 1 → Authentication & Role Validation
+
 ↓
 Module 2 → Device Registration & Control
+
 ↓
 Module 3 → Energy Usage Tracking
+
 ↓
 Module 4 → Alerts & Notifications
+
 ↓
 Module 5 → Analytics & Recommendations
 
@@ -206,9 +210,13 @@ This architecture improves:
 
 main
 ├── module1-authentication
+
 ├── module2-device_management
+
 ├── module3-energy-monitoring
+
 ├── module4-alerts-notifications
+
 └── module5-recommendation
 
 
